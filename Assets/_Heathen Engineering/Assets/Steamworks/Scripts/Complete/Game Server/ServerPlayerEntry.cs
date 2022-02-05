@@ -1,10 +1,10 @@
-﻿#if !DISABLESTEAMWORKS && HE_STEAMPLAYERSERVICES && HE_STEAMCOMPLETE
+﻿#if !DISABLESTEAMWORKS && HE_STEAMCOMPLETE
 using System;
 
-namespace HeathenEngineering.SteamAPI
+namespace HeathenEngineering.SteamworksIntegration
 {
     /// <summary>
-    /// Structure of the player entry data returned by the <see cref="GameServerBrowserTools.PlayerDetails(GameServerBrowserEntery, Action{GameServerBrowserEntery, bool})"/> method
+    /// Structure of the player entry data returned by the <see cref="GameServerBrowserManager.PlayerDetails(GameServerBrowserEntery, Action{GameServerBrowserEntery, bool})"/> method
     /// </summary>
     [Serializable]
     public class ServerPlayerEntry

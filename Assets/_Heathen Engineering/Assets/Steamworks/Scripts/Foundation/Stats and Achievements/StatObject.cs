@@ -3,7 +3,7 @@ using Steamworks;
 using System;
 using UnityEngine;
 
-namespace HeathenEngineering.SteamAPI
+namespace HeathenEngineering.SteamworksIntegration
 {
     /// <summary>
     /// A <see cref="ScriptableObject"/> containing the definition of a Steamworks Stat.
@@ -14,30 +14,20 @@ namespace HeathenEngineering.SteamAPI
     /// for more information please see <a href="https://partner.steamgames.com/doc/features/achievements">https://partner.steamgames.com/doc/features/achievements</a>
     /// </para>
     /// </remarks>
+    [HelpURL("https://kb.heathenengineering.com/assets/steamworks/stats-object")]
     [Serializable]
     public abstract class StatObject : ScriptableObject
     {
         /// <summary>
         /// The name of the stat as it appears in the Steamworks Portal
         /// </summary>
+        [HideInInspector]
         public string statName;
         /// <summary>
         /// Indicates the data type of this stat.
         /// This is used when working with the generic <see cref="StatObject"/> reference.
         /// </summary>
-        public abstract StatDataType DataType { get; }
-        /// <summary>
-        /// This should only be called internally when the Steamworks client notifies the system of an updated value
-        /// This does not call SetStat on the Steamworks backend
-        /// </summary>
-        /// <param name="value"></param>
-        internal abstract void InternalUpdateValue(int value);
-        /// <summary>
-        /// This should only be called internally when the Steamworks client notifies the system of an updated value
-        /// This does not call SetStat on the Steamworks backend
-        /// </summary>
-        /// <param name="value"></param>
-        internal abstract void InternalUpdateValue(float value);
+        public abstract DataType Type { get; }
         /// <summary>
         /// Returns the value of this stat as an int.
         /// This is used when working with the generic <see cref="StatObject"/> reference.
@@ -63,22 +53,34 @@ namespace HeathenEngineering.SteamAPI
         /// <param name="value">The value to set on the API</param>
         public abstract void SetFloatStat(float value);
         /// <summary>
+        /// Adds the provided value to the existing value of the stat
+        /// </summary>
+        /// <param name="value">The value to add to the current value</param>
+        public void AddFloatStat(float value)
+        {
+            SetFloatStat(GetFloatValue() + value);
+        }
+        /// <summary>
+        /// Adds the provided value to the existing value of the stat
+        /// </summary>
+        /// <param name="value">The value to add to the current value</param>
+        public void AddIntStat(int value)
+        {
+            SetIntStat(GetIntValue() + value);
+        }
+        /// <summary>
         /// This stores all stats to the Valve backend servers it is not possible to store only 1 stat at a time
         /// Note that this will cause a callback from Steamworks which will cause the stats to update
         /// </summary>
         public abstract void StoreStats();
         /// <summary>
-        /// Occures when the Set Value methods are called.
-        /// </summary>
-        public UnityStatEvent ValueChanged;
-
-        /// <summary>
         /// The availble type of stat data used in the Steamworks API
         /// </summary>
-        public enum StatDataType
+        public enum DataType
         {
             Int,
-            Float
+            Float,
+            AvgRate
         }
 
 #if UNITY_SERVER || UNITY_EDITOR

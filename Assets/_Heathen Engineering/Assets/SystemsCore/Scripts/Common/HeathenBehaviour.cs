@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace HeathenEngineering
 {
@@ -7,6 +8,8 @@ namespace HeathenEngineering
     /// </summary>
     public class HeathenBehaviour : MonoBehaviour
     {
+        public List<ScriptableObject> tags;
+
         private Transform _selfTransform;
         public Transform SelfTransform
         {
@@ -16,6 +19,18 @@ namespace HeathenEngineering
                     _selfTransform = GetComponent<Transform>();
                 return _selfTransform;
             }
+        }
+
+        public bool ContainsScriptableTag(ScriptableObject tag) => tags.Contains(tag);
+        public bool ContainsScriptableTags(IEnumerable<ScriptableObject> tags)
+        {
+            foreach(var tag in tags)
+            {
+                if (!this.tags.Contains(tag))
+                    return false;
+            }
+
+            return true;
         }
     }
 }

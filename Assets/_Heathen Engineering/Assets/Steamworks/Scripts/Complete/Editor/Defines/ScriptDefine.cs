@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
 
-namespace HeathenEngineering.SteamAPI.GameServices
+namespace HeathenEngineering.SteamworksIntegration.GameServices
 {
     static class ScriptDefine
     {
@@ -14,8 +14,7 @@ namespace HeathenEngineering.SteamAPI.GameServices
             string currentDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
             HashSet<string> defines = new HashSet<string>(currentDefines.Split(';'))
             {
-                "HE_STEAMCOMPLETE",
-                "HE_STEAMPLAYERSERVICES",
+                "HE_STEAMCOMPLETE"
             };
 
             string newDefines = string.Join(";", defines);

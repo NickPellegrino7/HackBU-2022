@@ -15,10 +15,11 @@ MonoImporter:
       type: 3}
   - leaderboardEntry: {fileID: 9197481963319205126, guid: 1880e70492e11d7489d99def48b9d166,
       type: 3}
+  - inventoryItemEntry: {fileID: 9197481963319205126, guid: 32fbc12c182cf8241a18f10a22f63dcb,
+      type: 3}
   - styleSheet: {fileID: 7433441132597879392, guid: 4f0128c0f453a244bb8fba2d174b979e,
       type: 3}
-  - avatarPlaceholderImage: {fileID: 2800000, guid: cfcf9b792cc971341aa3eee258b897af,
-      type: 3}
+  - avatarPlaceholderImage: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

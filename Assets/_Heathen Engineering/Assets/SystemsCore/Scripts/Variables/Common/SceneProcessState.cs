@@ -14,6 +14,7 @@ namespace HeathenEngineering
         public float unloadProgress;
         public float loadProgress;
         public float transitionProgress;
+        public bool complete;
         public bool hasError;
         public string errorMessage;
 

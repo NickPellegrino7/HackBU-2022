@@ -1,35 +1,35 @@
-Breaking Changes:
-- ClientApiSystem is now named SteamworksBehaviour
-An obsolete ClientApiSystem class is included to help guid code conversion if required. It is recomended to use SteamSettings as opposed to SteamworksBhaviour or ClietnApiSystem as these mono behaviours are simply wrappers around the SteamSettings' funcitonality
+v2019.2.15.3
 
 Note:
-This build uses a modified version of Steamworks.NET v15 based on Steamworks SDK v1.51
-The modification corrects for a known issue involving the GameServer.Intit method and bindings on on the m_usSteam port change introduced in SDK v1.51
+This asset is dependent on Steamworks.NET
+You should install Steamworks.NET via teh Unity Package Manager by selecting the '+' (plus) button and pasting the URL (https://github.com/rlabrecque/Steamworks.NET.git?path=/com.rlabrecque.steamworks.net) into the provided field and clickting the "Add" button to comit.
+This will install Steamworks.NET from the latest available GitHub and can be repeated as required to update the install.
 
 Patch Notes:
-- Fixed a bug that would cause Unity Editor to not see the change of App ID in the Steam Settings object as a change and thus not save it to disk when edited
-- Corrected event names in the Steam Settings and Steamworks Behaviour object for the Item Dropped event
-- Updated the P2P demo scene to correct issues that caused the Set Game Server event to not be recieved by members of the lobby ... this is a WIP but should get users going while we build better demo scenes for networking.
+Every interface, componenet, object and enum is now documented with additional documents for each sample scene and common learning topics. This patch is a signifigant update that changes every aspect of the kit and reorganizes many tools. Its recomended that you fully remove older versions before installing this version.
+
+Each API wrapped by the new interfaces manages all available callbacks as Unity Events and callResults as Actions
+
+Added
+- Added a Me field to the UserData structure which is simply a Static accessor that gets the local user's UserData
+- Added a SendMessage method to both UserData and FriendManager as a short cut to API.Friends.Client.ReplayToFriendMessage(...)
+- Added Reservations array to the Parties API that will automatically track pending Party reservations for you
+- Added MyBeacons array to the Parties API that will automatically track beacons you created and have not yet destroyed
+- Added 10 Remote Storage sample scene to demonstrate the use of DataModel and reading and writing data from Remote Storage
 
 ====================
 PLEASE NOTE
 ====================
 
-Steamworks.NET comes preinstalled with this package in the folder ./_HeathenEngineering/Steamworks/Plugins/
-If you already have Steamworks.NET installed you may need to resolve conflicts.
-Of key importance is the assembly def "Setamworks.NET.asmdef" that we have added to ./_HeathenEngineering/Steamworks/Plugins/Steamworks.NET/
-This assembly def is referneced by our own asembly defs located in each module of the Framework. If this is not present and does not include Steamworks.NET's objects you will have issues. 
-
-To resolve the common issue of 
-CSteamId is not found are you missing an assembly reference
-
-Please locate the Steamworks.NET.asmdef that we have included  which should be located at ./_HeathenEngineering/Steamworks/Plugins/Steamworks.NET/Steamworks.NET.asmdef and move it to where ever you have Steamworks.NET plugin installed
-such that it is housed within the Steamworks.NET folder that the plugin includes.
-
 If you have issues where in Steam attempts to launch your game (or Spacewar) when you start simulating in Unity the most likely cause of this issue is that you do not have steam_appid.txt located in the root of your project.
 steam_appid.txt is a simple text file that should be located in the root of your project (beside not in the Asset folder) it should contain only your app ID.
 
 An example of a valid steam_appid.txt follows, only the content between the dashed lines should be used e.g. only the number 480 should be in the file.
+
+v2019.2.15.6
+Fixed
+- Added version number of price_category node of the Steam Inventory Item Definition Copy JSON feature
+- Corrected the validation test for Steam Inventory Item Defnition exchange materials which would return invalid incorrectly in some cases.
                
                Start File
 -----------------------------------------------

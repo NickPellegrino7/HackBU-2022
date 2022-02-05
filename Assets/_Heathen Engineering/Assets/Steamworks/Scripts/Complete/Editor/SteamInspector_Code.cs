@@ -1,12 +1,14 @@
-#if !DISABLESTEAMWORKS && HE_STEAMPLAYERSERVICES && HE_STEAMCOMPLETE
+#if !DISABLESTEAMWORKS && HE_STEAMCOMPLETE
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.IO;
 using System.Collections.Generic;
 using UnityEditor.UIElements;
+using System.Linq;
+using System.Collections;
 
-namespace HeathenEngineering.SteamAPI.Editors
+namespace HeathenEngineering.SteamworksIntegration.Editors
 {
 
     public class SteamInspector_Code : EditorWindow
@@ -18,6 +20,7 @@ namespace HeathenEngineering.SteamAPI.Editors
         public VisualTreeAsset statEntry;
         public VisualTreeAsset achievementEntry;
         public VisualTreeAsset leaderboardEntry;
+        public VisualTreeAsset inventoryItemEntry;
         public StyleSheet styleSheet;
 
         public Texture2D avatarPlaceholderImage;
@@ -29,13 +32,15 @@ namespace HeathenEngineering.SteamAPI.Editors
         private VisualElement avatarImage;
         private Label csteamId;
         private Label userName;
-        private Label dlcCount;
-        private Label statsCount;
-        private Label achievmentCount;
-        private Label leaderboardCount;
-        public ToolbarToggle commonToggle;
-        public ToolbarToggle lobbyToggle;
-        public ToolbarToggle inventoryToggle;
+        private Label userLevel;
+        private Label userPresence;
+        private ToolbarToggle commonToggle;
+        private ToolbarToggle lobbyToggle;
+        private ToolbarToggle inventoryToggle;
+        private ToolbarToggle statsToggle;
+        private ToolbarToggle achToggle;
+        private ToolbarToggle leaderboardToggle;
+        private ToolbarToggle dlcToggle;
         private VisualElement dlcCollection;
         private VisualElement statCollection;
         private VisualElement achievmentCollection;
@@ -43,12 +48,19 @@ namespace HeathenEngineering.SteamAPI.Editors
         private VisualElement commonContainer;
         private VisualElement lobbyContainer;
         private VisualElement inventoryContainer;
-        private IMGUIContainer inventoryIMGUI;
         private IMGUIContainer lobbyIMGUI;
-        public InventoryIMGUITool generator;
         private LobbyIMGUITool lobbyTools;
+        private VisualElement statsPage;
+        private VisualElement achPage;
+        private VisualElement leaderboardPage;
+        private VisualElement dlcPage;
+        private VisualElement invPage;
+        private Button resetStatsButton;
+        private Button refreshBoardsButton;
 
+        private bool refreshingScores = false;
         private bool internalUpdate = false;
+        private Dictionary<Steamworks.SteamLeaderboard_t, LeaderboardEntry> entryDictionary = new Dictionary<Steamworks.SteamLeaderboard_t, LeaderboardEntry>();
 
         [MenuItem("Steamworks/Inspector")]
         public static void ShowExample()
@@ -61,7 +73,6 @@ namespace HeathenEngineering.SteamAPI.Editors
         {
             // Each editor window contains a root VisualElement object
             VisualElement root = rootVisualElement;
-            generator = new InventoryIMGUITool();
             lobbyTools = new LobbyIMGUITool();
 
             VisualElement labelFromUXML = headerTree.CloneTree();
@@ -70,35 +81,236 @@ namespace HeathenEngineering.SteamAPI.Editors
             initalizationField = root.Q<Label>(name = "lblInit");
             listedAppId = root.Q<Label>(name = "lblListedAppId");
             reportedAppId = root.Q<Label>(name = "lblRptAppId");
+            
             steamAppId = root.Q<Label>(name = "lblSteamAppIdTxt");
             avatarImage = root.Q<VisualElement>(name = "imgAvatar");
             csteamId = root.Q<Label>(name = "lblCsteamId");
             userName = root.Q<Label>(name = "lblUserName");
-            dlcCount = root.Q<Label>(name = "lblDlcCount");
+            userLevel = root.Q<Label>(name = "lblUserLevel");
+            userPresence = root.Q<Label>(name = "lblUserPresence");
+
             dlcCollection = root.Q<VisualElement>(name = "dlcContent");
-            achievmentCount = root.Q<Label>(name = "lblAchCount");
-            leaderboardCount = root.Q<Label>(name = "lblLdrBrdCount");
-            statsCount = root.Q<Label>(name = "lblStatsCount");
             statCollection = root.Q<VisualElement>(name = "statContent");
             achievmentCollection = root.Q<VisualElement>(name = "achContent");
-            leaderboardCollection = root.Q<VisualElement>(name = "ldrBoardContent");            
+            leaderboardCollection = root.Q<VisualElement>(name = "ldrBoardContent");
+            inventoryContainer = root.Q<VisualElement>(name = "InvItemContent");
+            lobbyIMGUI = root.Q<IMGUIContainer>(name = "lobbyContainer");
 
             commonToggle = root.Q<ToolbarToggle>(name = "tglCmn");
             lobbyToggle = root.Q<ToolbarToggle>(name = "tglLby");
-            inventoryToggle = root.Q<ToolbarToggle>(name = "tglInv");
+            inventoryToggle = root.Q<ToolbarToggle>(name = "tglInventory");
+            statsToggle = root.Q<ToolbarToggle>(name = "tglStats");
+            dlcToggle = root.Q<ToolbarToggle>(name = "tglDlc");
+            achToggle = root.Q<ToolbarToggle>(name = "tglAch");
+            leaderboardToggle = root.Q<ToolbarToggle>(name = "tglLeaderboard");
 
             commonContainer = root.Q<ScrollView>(name = "pgCommon");
             lobbyContainer = root.Q<VisualElement>(name = "pgLobby");
-            inventoryContainer = root.Q<VisualElement>(name = "pgInventory");
-            inventoryIMGUI = root.Q<IMGUIContainer>(name = "invContainer");
-            inventoryIMGUI.onGUIHandler = generator.OnGUI;
-            lobbyIMGUI = root.Q<IMGUIContainer>(name = "lobbyContainer");
+
+            statsPage = root.Q<VisualElement>(name = "pgStats");
+            achPage = root.Q<VisualElement>(name = "pgAchievements");
+            leaderboardPage = root.Q<VisualElement>(name = "pgLeaderboard");
+            dlcPage = root.Q<VisualElement>(name = "pgDlc");
+            invPage = root.Q<VisualElement>(name = "pgInventory");
+
+            resetStatsButton = root.Q<Button>(name = "btResetAll");
+            refreshBoardsButton = root.Q<Button>(name = "btBoardRefresh");
+
             lobbyIMGUI.onGUIHandler = lobbyTools.OnGUI;
 
 
             commonToggle.RegisterValueChangedCallback(HandleCommonToggleChange);
             lobbyToggle.RegisterValueChangedCallback(HandleLobbyToggleChange);
             inventoryToggle.RegisterValueChangedCallback(HandleInventoryToggleChange);
+
+            statsToggle.RegisterValueChangedCallback(HandleStatsToggleChange);
+            achToggle.RegisterValueChangedCallback(HandleAchievementToggleChange);
+            dlcToggle.RegisterValueChangedCallback(HandleDlcToggleChange);
+            leaderboardToggle.RegisterValueChangedCallback(HandleLeaderboardToggleChange);
+
+            RefreshAllLeaderboardEntries();
+            resetStatsButton.clicked += () => { API.StatsAndAchievements.Client.ResetAllStats(false); };
+            refreshBoardsButton.clicked += RefreshAllLeaderboardEntries;
+        }
+
+        private void RefreshAllLeaderboardEntries()
+        {
+            if (refreshingScores || !Application.isPlaying || SteamSettings.behaviour == null)
+                return;
+
+            SteamSettings.behaviour.StartCoroutine(RefreshScores());
+        }
+
+        private IEnumerator RefreshScores()
+        {
+            refreshingScores = true;
+
+            entryDictionary.Clear();
+            foreach (var board in SteamSettings.current.leaderboards)
+            {
+                bool waiting = true;
+                float exitTime = Time.realtimeSinceStartup + 5f;
+                var id = board.leaderboardId;
+                board.GetUserEntry((r, e) =>
+                {
+                    if (!e && !entryDictionary.ContainsKey(id))
+                        entryDictionary.Add(id, r);
+
+                    waiting = false;
+                });
+
+                yield return new WaitWhile(() => waiting && exitTime > Time.realtimeSinceStartup);
+            }
+
+            refreshingScores = false;
+        }
+
+        private void HandleStatsToggleChange(ChangeEvent<bool> evt)
+        {
+            if (!evt.newValue || internalUpdate)
+                return;
+
+            internalUpdate = true;
+
+            if (statsToggle.value)
+            {
+                if (commonToggle.value)
+                    commonToggle.value = false;
+                //if (statsToggle.value)
+                //    statsToggle.value = false;
+                if (achToggle.value)
+                    achToggle.value = false;
+                if (leaderboardToggle.value)
+                    leaderboardToggle.value = false;
+                if (dlcToggle.value)
+                    dlcToggle.value = false;
+                if (inventoryToggle.value)
+                    inventoryToggle.value = false;
+                if (lobbyToggle.value)
+                    lobbyToggle.value = false;
+                
+
+                commonContainer.style.display = DisplayStyle.None;
+                statsPage.style.display = DisplayStyle.Flex;
+                achPage.style.display = DisplayStyle.None;
+                leaderboardPage.style.display = DisplayStyle.None;
+                dlcPage.style.display = DisplayStyle.None;
+                invPage.style.display = DisplayStyle.None;
+                lobbyContainer.style.display = DisplayStyle.None;
+            }
+
+            internalUpdate = false;
+        }
+
+        private void HandleAchievementToggleChange(ChangeEvent<bool> evt)
+        {
+            if (!evt.newValue || internalUpdate)
+                return;
+
+            internalUpdate = true;
+
+            if (achToggle.value)
+            {
+                if (commonToggle.value)
+                    commonToggle.value = false;
+                if (statsToggle.value)
+                    statsToggle.value = false;
+                //if (achToggle.value)
+                //    achToggle.value = false;
+                if (leaderboardToggle.value)
+                    leaderboardToggle.value = false;
+                if (dlcToggle.value)
+                    dlcToggle.value = false;
+                if (inventoryToggle.value)
+                    inventoryToggle.value = false;
+                if (lobbyToggle.value)
+                    lobbyToggle.value = false;
+
+
+                commonContainer.style.display = DisplayStyle.None;
+                statsPage.style.display = DisplayStyle.None;
+                achPage.style.display = DisplayStyle.Flex;
+                leaderboardPage.style.display = DisplayStyle.None;
+                dlcPage.style.display = DisplayStyle.None;
+                invPage.style.display = DisplayStyle.None;
+                lobbyContainer.style.display = DisplayStyle.None;
+            }
+
+            internalUpdate = false;
+        }
+
+        private void HandleDlcToggleChange(ChangeEvent<bool> evt)
+        {
+            if (!evt.newValue || internalUpdate)
+                return;
+
+            internalUpdate = true;
+
+            if (dlcToggle.value)
+            {
+                if (commonToggle.value)
+                    commonToggle.value = false;
+                if (statsToggle.value)
+                    statsToggle.value = false;
+                if (achToggle.value)
+                    achToggle.value = false;
+                if (leaderboardToggle.value)
+                    leaderboardToggle.value = false;
+                //if (dlcToggle.value)
+                //    dlcToggle.value = false;
+                if (inventoryToggle.value)
+                    inventoryToggle.value = false;
+                if (lobbyToggle.value)
+                    lobbyToggle.value = false;
+
+
+                commonContainer.style.display = DisplayStyle.None;
+                statsPage.style.display = DisplayStyle.None;
+                achPage.style.display = DisplayStyle.None;
+                leaderboardPage.style.display = DisplayStyle.None;
+                dlcPage.style.display = DisplayStyle.Flex;
+                invPage.style.display = DisplayStyle.None;
+                lobbyContainer.style.display = DisplayStyle.None;
+            }
+
+            internalUpdate = false;
+        }
+
+        private void HandleLeaderboardToggleChange(ChangeEvent<bool> evt)
+        {
+            if (!evt.newValue || internalUpdate)
+                return;
+
+            internalUpdate = true;
+
+            if (leaderboardToggle.value)
+            {
+                if (commonToggle.value)
+                    commonToggle.value = false;
+                if (statsToggle.value)
+                    statsToggle.value = false;
+                if (achToggle.value)
+                    achToggle.value = false;
+                //if (leaderboardToggle.value)
+                //    leaderboardToggle.value = false;
+                if (dlcToggle.value)
+                    dlcToggle.value = false;
+                if (inventoryToggle.value)
+                    inventoryToggle.value = false;
+                if (lobbyToggle.value)
+                    lobbyToggle.value = false;
+
+
+                commonContainer.style.display = DisplayStyle.None;
+                statsPage.style.display = DisplayStyle.None;
+                achPage.style.display = DisplayStyle.None;
+                leaderboardPage.style.display = DisplayStyle.Flex;
+                dlcPage.style.display = DisplayStyle.None;
+                invPage.style.display = DisplayStyle.None;
+                lobbyContainer.style.display = DisplayStyle.None;
+            }
+
+            internalUpdate = false;
         }
 
         private void HandleCommonToggleChange(ChangeEvent<bool> evt)
@@ -110,14 +322,29 @@ namespace HeathenEngineering.SteamAPI.Editors
 
             if (commonToggle.value)
             {
-                if (lobbyToggle.value)
-                    lobbyToggle.value = false;
+                //if (commonToggle.value)
+                //    commonToggle.value = false;
+                if (statsToggle.value)
+                    statsToggle.value = false;
+                if (achToggle.value)
+                    achToggle.value = false;
+                if (leaderboardToggle.value)
+                    leaderboardToggle.value = false;
+                if (dlcToggle.value)
+                    dlcToggle.value = false;
                 if (inventoryToggle.value)
                     inventoryToggle.value = false;
+                if (lobbyToggle.value)
+                    lobbyToggle.value = false;
 
-                lobbyContainer.style.display = DisplayStyle.None;
-                inventoryContainer.style.display = DisplayStyle.None;
+
                 commonContainer.style.display = DisplayStyle.Flex;
+                statsPage.style.display = DisplayStyle.None;
+                achPage.style.display = DisplayStyle.None;
+                leaderboardPage.style.display = DisplayStyle.None;
+                dlcPage.style.display = DisplayStyle.None;
+                invPage.style.display = DisplayStyle.None;
+                lobbyContainer.style.display = DisplayStyle.None;
             }
 
             internalUpdate = false;
@@ -134,12 +361,27 @@ namespace HeathenEngineering.SteamAPI.Editors
             {
                 if (commonToggle.value)
                     commonToggle.value = false;
+                if (statsToggle.value)
+                    statsToggle.value = false;
+                if (achToggle.value)
+                    achToggle.value = false;
+                if (leaderboardToggle.value)
+                    leaderboardToggle.value = false;
+                if (dlcToggle.value)
+                    dlcToggle.value = false;
                 if (inventoryToggle.value)
                     inventoryToggle.value = false;
+                //if (lobbyToggle.value)
+                //    lobbyToggle.value = false;
 
-                lobbyContainer.style.display = DisplayStyle.Flex;
-                inventoryContainer.style.display = DisplayStyle.None;
+
                 commonContainer.style.display = DisplayStyle.None;
+                statsPage.style.display = DisplayStyle.None;
+                achPage.style.display = DisplayStyle.None;
+                leaderboardPage.style.display = DisplayStyle.None;
+                dlcPage.style.display = DisplayStyle.None;
+                invPage.style.display = DisplayStyle.None;
+                lobbyContainer.style.display = DisplayStyle.Flex;
             }
 
             internalUpdate = false;
@@ -154,14 +396,29 @@ namespace HeathenEngineering.SteamAPI.Editors
 
             if (inventoryToggle.value)
             {
-                if (lobbyToggle.value)
-                    lobbyToggle.value = false;
                 if (commonToggle.value)
                     commonToggle.value = false;
+                if (statsToggle.value)
+                    statsToggle.value = false;
+                if (achToggle.value)
+                    achToggle.value = false;
+                if (leaderboardToggle.value)
+                    leaderboardToggle.value = false;
+                if (dlcToggle.value)
+                    dlcToggle.value = false;
+                //if (inventoryToggle.value)
+                //    inventoryToggle.value = false;
+                if (lobbyToggle.value)
+                    lobbyToggle.value = false;
 
-                lobbyContainer.style.display = DisplayStyle.None;
-                inventoryContainer.style.display = DisplayStyle.Flex;
+
                 commonContainer.style.display = DisplayStyle.None;
+                statsPage.style.display = DisplayStyle.None;
+                achPage.style.display = DisplayStyle.None;
+                leaderboardPage.style.display = DisplayStyle.None;
+                dlcPage.style.display = DisplayStyle.None;
+                invPage.style.display = DisplayStyle.Flex;
+                lobbyContainer.style.display = DisplayStyle.None;
             }
 
             internalUpdate = false;
@@ -169,14 +426,13 @@ namespace HeathenEngineering.SteamAPI.Editors
 
         private void OnGUI()
         {
-
             if (steamAppId == null)
             {
                 VisualElement root = rootVisualElement;
                 steamAppId = root.Q<Label>(name = "lblSteamAppIdTxt");
             }
 
-            var appIdPath = Application.dataPath.Replace("/Assets", "") + "/steam_appid.txt";
+            var appIdPath = new DirectoryInfo(Application.dataPath).Parent.FullName + "/steam_appid.txt";
 
             var appIdTxtExists = File.Exists(appIdPath);
 
@@ -193,40 +449,67 @@ namespace HeathenEngineering.SteamAPI.Editors
 
             if (Application.isPlaying)
             {
-                if (HeathenEngineering.SteamAPI.SteamSettings.Initialized)
+                if (HeathenEngineering.SteamworksIntegration.SteamSettings.Initialized)
                 {
                     initalizationField.text = "Initialized";
-                    listedAppId.text = HeathenEngineering.SteamAPI.SteamSettings.ApplicationId.m_AppId.ToString();
-                    reportedAppId.text = HeathenEngineering.SteamAPI.SteamSettings.GetAppId().m_AppId.ToString();
+                    listedAppId.text = HeathenEngineering.SteamworksIntegration.SteamSettings.ApplicationId.m_AppId.ToString();
+                    reportedAppId.text = API.App.Client.Id.m_AppId.ToString();
+                    csteamId.text = API.User.Client.Id.ToString();
+                    userName.text = API.User.Client.Id.Name;
+                    userLevel.text = API.User.Client.Level.ToString();
+                    var rp = API.User.Client.RichPresence;
+                    
+                    if(rp.Length > 0)
+                    {
+                        userPresence.text = "";
+                        for (int i = 0; i < rp.Length; i++)
+                        {
+                            if (userPresence.text.Length > 0)
+                                userPresence.text += "\n";
+
+                            var rpe = rp[i];
+                            userPresence.text += rpe.key + ":" + rpe.value;
+                        }
+                    }
+                    else
+                    {
+                        userPresence.text = "None set";
+                    }
+                    
                 }
-                else if (HeathenEngineering.SteamAPI.SteamSettings.HasInitalizationError)
+                else if (HeathenEngineering.SteamworksIntegration.SteamSettings.HasInitalizationError)
+                {
                     initalizationField.text = "Erred";
-                else
-                    initalizationField.text = "Pending";
-
-                var userData = HeathenEngineering.SteamAPI.SteamSettings.Initialized ? HeathenEngineering.SteamAPI.SteamSettings.Client.user : null;
-
-                if (userData != null)
-                {
-                    if (userData.avatar != null)
-                        avatarImage.style.backgroundImage = new StyleBackground(userData.avatar);
-
-                    csteamId.text = userData.id.ToString();
-                    userName.text = userData.DisplayName;
-                }
-                else
-                {
-                    avatarImage.style.backgroundImage = new StyleBackground(avatarPlaceholderImage);
                     csteamId.text = "0";
                     userName.text = "unknown";
+                    userLevel.text = "1";
+                    userPresence.text = "unknown";
+                }
+                else
+                {
+                    initalizationField.text = "Pending";
+                    csteamId.text = "0";
+                    userName.text = "unknown";
+                    userLevel.text = "1";
+                    userPresence.text = "unknown";
+                }
+
+                var avatar = API.User.Client.Id.Avatar;
+                if (avatar != null)
+                    avatarImage.style.backgroundImage = new StyleBackground(API.User.Client.Id.Avatar);
+                else
+                {
+                    API.User.Client.Id.LoadAvatar((t) =>
+                    {
+                        avatarImage.style.backgroundImage = new StyleBackground(t);
+                    });
                 }
 
                 UpdateAchievements();
                 UpdateDLC();
                 UpdateStats();
                 UpdateLeaderboard();
-
-
+                UpdateInventory();
             }
             else
             {
@@ -237,11 +520,9 @@ namespace HeathenEngineering.SteamAPI.Editors
                 avatarImage.style.backgroundImage = new StyleBackground(avatarPlaceholderImage);
                 csteamId.text = "0";
                 userName.text = "unknown";
+                userLevel.text = "1";
+                userPresence.text = "unknown";
 
-                dlcCount.text = "DLC:";
-                achievmentCount.text = "Achievements:";
-                statsCount.text = "Stats:";
-                leaderboardCount.text = "Leaderboards:";
 
                 if (dlcCollection.childCount > 0)
                     dlcCollection.Clear();
@@ -259,59 +540,119 @@ namespace HeathenEngineering.SteamAPI.Editors
 
         private void UpdateAchievements()
         {
-            achievmentCount.text = "Achievements: " + HeathenEngineering.SteamAPI.SteamSettings.Achievements.Count.ToString();
-
-            if (achievmentCollection.childCount > HeathenEngineering.SteamAPI.SteamSettings.Achievements.Count)
+            if (achievmentCollection.childCount > HeathenEngineering.SteamworksIntegration.SteamSettings.Achievements.Count)
                 achievmentCollection.Clear();
 
-            while (achievmentCollection.childCount < HeathenEngineering.SteamAPI.SteamSettings.Achievements.Count)
+            while (achievmentCollection.childCount < HeathenEngineering.SteamworksIntegration.SteamSettings.Achievements.Count)
             {
                 var nElement = achievementEntry.CloneTree();
                 achievmentCollection.Add(nElement);
+
+                Button unlockButton = nElement.Query<Button>(name = "btnUnlock");
+                var index = achievmentCollection.childCount - 1;
+                unlockButton.clicked += () =>
+                {
+                    var item = SteamSettings.Achievements[index];
+                    item.Unlock();
+                };
+                Button resetButton = nElement.Query<Button>(name = "btnReset");
+                resetButton.clicked += () =>
+                {
+                    var item = SteamSettings.Achievements[index];
+                    item.ClearAchievement();
+                };
             }
 
             var itemList = new List<VisualElement>(achievmentCollection.Children());
 
-            for (int i = 0; i < HeathenEngineering.SteamAPI.SteamSettings.Achievements.Count; i++)
+            for (int i = 0; i < HeathenEngineering.SteamworksIntegration.SteamSettings.Achievements.Count; i++)
             {
-                var ach = HeathenEngineering.SteamAPI.SteamSettings.Achievements[i];
+                var ach = HeathenEngineering.SteamworksIntegration.SteamSettings.Achievements[i];
                 Label lblName = itemList[i].Query<Label>(name = "lblAchName");
-                lblName.text = ach.displayName;
+                lblName.text = ach.Name;
 
                 Label lblId = itemList[i].Query<Label>(name = "lblAchId");
-                lblId.text = ach.achievementId;
+                lblId.text = ach.Id;
 
                 Label lblStatus = itemList[i].Query<Label>(name = "lblStatus");
-                lblStatus.text = ach.isAchieved.ToString();
+                lblStatus.text = ach.IsAchieved.ToString();
+
+                Button unlockButton = itemList[i].Query<Button>(name = "btnUnlock");
+                Button resetButton = itemList[i].Query<Button>(name = "btnReset");
+                if (ach.IsAchieved)
+                {
+                    unlockButton.style.display = DisplayStyle.None;
+                    resetButton.style.display = DisplayStyle.Flex;
+                }
+                else
+                {
+                    unlockButton.style.display = DisplayStyle.Flex;
+                    resetButton.style.display = DisplayStyle.None;
+                }
             }
         }
 
         private void UpdateStats()
         {
-            statsCount.text = "Stats: " + HeathenEngineering.SteamAPI.SteamSettings.Stats.Count.ToString();
-
-            if (statCollection.childCount > HeathenEngineering.SteamAPI.SteamSettings.Stats.Count)
+            if (statCollection.childCount > HeathenEngineering.SteamworksIntegration.SteamSettings.Stats.Count)
                 statCollection.Clear();
 
-            while (statCollection.childCount < HeathenEngineering.SteamAPI.SteamSettings.Stats.Count)
+            while (statCollection.childCount < HeathenEngineering.SteamworksIntegration.SteamSettings.Stats.Count)
             {
                 var nElement = statEntry.CloneTree();
                 statCollection.Add(nElement);
+
+                Button setButton = nElement.Query<Button>(name = "btnSet");
+                
+                var index = statCollection.childCount - 1;
+                setButton.clicked += () =>
+                {
+                    var item = SteamSettings.Stats[index];
+                    var statsList = new List<VisualElement>(statCollection.Children());
+                    TextField inputField = statsList[index].Query<TextField>(name = "inputValue");
+
+                    if(item.Type == StatObject.DataType.Int)
+                    {
+                        if (int.TryParse(inputField.value, out int result))
+                        {
+                            item.SetIntStat(result);
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Unable to set stat: " + item.statName + " value must be a valid int.");
+                            inputField.value = item.GetIntValue().ToString();
+                        }
+                    }
+                    else if (item.Type == StatObject.DataType.Float)
+                    {
+                        if (float.TryParse(inputField.value, out float result))
+                            item.SetFloatStat(result);
+                        else
+                        {
+                            Debug.LogWarning("Unable to set stat: " + item.statName + " value must be a valid float.");
+                            inputField.value = item.GetFloatValue().ToString();
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Cannot set average rate state values from the inspector as they require both a value and a duration");
+                    }
+                };
             }
 
             var statList = new List<VisualElement>(statCollection.Children());
 
-            for (int i = 0; i < HeathenEngineering.SteamAPI.SteamSettings.Stats.Count; i++)
+            for (int i = 0; i < HeathenEngineering.SteamworksIntegration.SteamSettings.Stats.Count; i++)
             {
-                var stat = HeathenEngineering.SteamAPI.SteamSettings.Stats[i];
+                var stat = HeathenEngineering.SteamworksIntegration.SteamSettings.Stats[i];
                 Label statName = statList[i].Query<Label>(name = "lblStatName");
                 statName.text = stat.name;
 
                 Label statDataType = statList[i].Query<Label>(name = "lblDataType");
-                statDataType.text = stat.DataType.ToString();
+                statDataType.text = stat.Type.ToString();
 
                 Label statValue = statList[i].Query<Label>(name = "lblValue");
-                if (stat.DataType == HeathenEngineering.SteamAPI.StatObject.StatDataType.Float)
+                if (stat.Type == HeathenEngineering.SteamworksIntegration.StatObject.DataType.Float)
                     statValue.text = stat.GetFloatValue().ToString();
                 else
                     statValue.text = stat.GetIntValue().ToString();
@@ -320,12 +661,10 @@ namespace HeathenEngineering.SteamAPI.Editors
 
         private void UpdateDLC()
         {
-            dlcCount.text = "DLC: " + HeathenEngineering.SteamAPI.SteamSettings.DLC.Count.ToString();
-
-            if (dlcCollection.childCount > HeathenEngineering.SteamAPI.SteamSettings.DLC.Count)
+            if (dlcCollection.childCount > HeathenEngineering.SteamworksIntegration.SteamSettings.DLC.Count)
                 dlcCollection.Clear();
 
-            while (dlcCollection.childCount < HeathenEngineering.SteamAPI.SteamSettings.DLC.Count)
+            while (dlcCollection.childCount < HeathenEngineering.SteamworksIntegration.SteamSettings.DLC.Count)
             {
                 var nElement = dlcEntry.CloneTree();
                 dlcCollection.Add(nElement);
@@ -333,9 +672,9 @@ namespace HeathenEngineering.SteamAPI.Editors
 
             var dlcList = new List<VisualElement>(dlcCollection.Children());
 
-            for (int i = 0; i < HeathenEngineering.SteamAPI.SteamSettings.DLC.Count; i++)
+            for (int i = 0; i < HeathenEngineering.SteamworksIntegration.SteamSettings.DLC.Count; i++)
             {
-                var dlc = HeathenEngineering.SteamAPI.SteamSettings.DLC[i];
+                var dlc = HeathenEngineering.SteamworksIntegration.SteamSettings.DLC[i];
                 Label dlcName = dlcList[i].Query<Label>(name = "lblDlcName");
                 dlcName.text = dlc.name;
 
@@ -349,12 +688,10 @@ namespace HeathenEngineering.SteamAPI.Editors
 
         private void UpdateLeaderboard()
         {
-            leaderboardCount.text = "Leaderboards: " + HeathenEngineering.SteamAPI.SteamSettings.Leaderboards.Count.ToString();
-
-            if (leaderboardCollection.childCount > HeathenEngineering.SteamAPI.SteamSettings.Leaderboards.Count)
+            if (leaderboardCollection.childCount > HeathenEngineering.SteamworksIntegration.SteamSettings.Leaderboards.Count)
                 leaderboardCollection.Clear();
 
-            while (leaderboardCollection.childCount < HeathenEngineering.SteamAPI.SteamSettings.Leaderboards.Count)
+            while (leaderboardCollection.childCount < HeathenEngineering.SteamworksIntegration.SteamSettings.Leaderboards.Count)
             {
                 var nElement = leaderboardEntry.CloneTree();
                 leaderboardCollection.Add(nElement);
@@ -362,20 +699,105 @@ namespace HeathenEngineering.SteamAPI.Editors
 
             var itemList = new List<VisualElement>(leaderboardCollection.Children());
 
-            for (int i = 0; i < HeathenEngineering.SteamAPI.SteamSettings.Leaderboards.Count; i++)
+            if (entryDictionary == null)
+                entryDictionary = new Dictionary<Steamworks.SteamLeaderboard_t, LeaderboardEntry>();
+
+            for (int i = 0; i < HeathenEngineering.SteamworksIntegration.SteamSettings.Leaderboards.Count; i++)
             {
-                var leaderboard = HeathenEngineering.SteamAPI.SteamSettings.Leaderboards[i];
+                var leaderboard = HeathenEngineering.SteamworksIntegration.SteamSettings.Leaderboards[i];
                 Label lblName = itemList[i].Query<Label>(name = "lblName");
                 lblName.text = leaderboard.leaderboardName;
 
                 Label lblId = itemList[i].Query<Label>(name = "lblId");
-                lblId.text = leaderboard.leaderboardId?.ToString();
+                lblId.text = leaderboard.leaderboardId.ToString();
 
                 Label lblScore = itemList[i].Query<Label>(name = "lblScore");
-                lblScore.text = leaderboard.userEntry?.entry.m_nScore.ToString();
-
                 Label lblRank = itemList[i].Query<Label>(name = "lblRank");
-                lblRank.text = leaderboard.userEntry?.entry.m_nGlobalRank.ToString();
+
+                if (entryDictionary.ContainsKey(leaderboard.leaderboardId) && leaderboard.Valid && entryDictionary[leaderboard.leaderboardId] != null)
+                {
+                    lblScore.text = entryDictionary[leaderboard.leaderboardId].entry.m_nScore.ToString();
+                    lblRank.text = entryDictionary[leaderboard.leaderboardId].entry.m_nGlobalRank.ToString();
+                }
+                else
+                {
+                    lblScore.text = "Unknown";
+                    lblRank.text = "Unknown";
+                }
+            }
+        }
+
+        private void UpdateInventory()
+        {
+            if (inventoryContainer.childCount > HeathenEngineering.SteamworksIntegration.SteamSettings.Client.inventory.items.Count)
+                inventoryContainer.Clear();
+
+            while (inventoryContainer.childCount < HeathenEngineering.SteamworksIntegration.SteamSettings.Client.inventory.items.Count)
+            {
+                var nElement = inventoryItemEntry.CloneTree();
+                inventoryContainer.Add(nElement);
+
+                Button grantButton = nElement.Query<Button>(name = "btnGrant");
+                var index = inventoryContainer.childCount - 1;
+                grantButton.clicked += () =>
+                {
+                    var item = SteamSettings.Client.inventory.items[index];
+                    API.Inventory.Client.GenerateItems(new Steamworks.SteamItemDef_t[] { item.Id }, new uint[] { 1 }, (i) => 
+                    {
+                        Debug.Log("Generate of " + item.Id.m_SteamItemDef + " completed with result: " + i.result);
+                    });
+                };
+                Button clearButton = nElement.Query<Button>(name = "btnClear");
+                clearButton.clicked += () =>
+                {
+                    var item = SteamSettings.Client.inventory.items[index];
+                    foreach (var instance in item.Details)
+                    {
+                        if (instance.Quantity > 0)
+                        {
+                            var quantity = instance.Quantity;
+                            API.Inventory.Client.ConsumeItem(instance.ItemId, instance.Quantity, (i) => 
+                            {
+                                if (i.result == Steamworks.EResult.k_EResultOK)
+                                    Debug.Log("Consume request: " + i.result);
+                                else
+                                {
+                                    Debug.Log("Consume request: " + i.result + ", you may need to run the clear request multiple times.");
+                                }
+                            });
+                        }
+                    }
+                };
+            }
+
+            var itemList = new List<VisualElement>(inventoryContainer.Children());
+
+            for (int i = 0; i < HeathenEngineering.SteamworksIntegration.SteamSettings.Client.inventory.items.Count; i++)
+            {
+                var item = HeathenEngineering.SteamworksIntegration.SteamSettings.Client.inventory.items[i];
+
+                Label lblName = itemList[i].Query<Label>(name = "LblInvItemName");
+                lblName.text = item.Name;
+
+                Label lblId = itemList[i].Query<Label>(name = "LblInvItemId");
+                lblId.text = item.Id.m_SteamItemDef.ToString();
+
+                Label lblScore = itemList[i].Query<Label>(name = "LblInvItemType");
+                lblScore.text = item.Type.ToString();
+
+                Label lblRank = itemList[i].Query<Label>(name = "LblInvItemCount");
+                lblRank.text = item.TotalQuantity.ToString();
+
+                Button clearButton = itemList[i].Query<Button>(name = "btnClear");
+                if (item.Type == Enums.InventoryItemType.item && item.TotalQuantity > 0)
+                {
+                    clearButton.style.display = DisplayStyle.Flex;
+                }
+                else
+                {
+                    clearButton.style.display = DisplayStyle.None;
+                }
+                
             }
         }
     }

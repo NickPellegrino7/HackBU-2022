@@ -3,7 +3,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace HeathenEngineering.SteamAPI.Editors
+namespace HeathenEngineering.SteamworksIntegration.Editors
 {
     static class SteamAppIdWriter
     {
@@ -13,7 +13,7 @@ namespace HeathenEngineering.SteamAPI.Editors
         [InitializeOnLoadMethod]
         public static void CreateAppIdTextFileIfMissing()
         {
-            var appIdPath = Application.dataPath.Replace("/Assets", "") + "/steam_appid.txt";
+            var appIdPath = new DirectoryInfo(Application.dataPath).Parent.FullName + "/steam_appid.txt";
             if (!File.Exists(appIdPath))
                 File.WriteAllText(appIdPath, "480");
         }

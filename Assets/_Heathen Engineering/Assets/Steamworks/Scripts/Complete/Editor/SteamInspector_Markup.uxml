@@ -1,9 +1,13 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <uie:Toolbar style="overflow: hidden; position: relative; width: 100%; flex-direction: row;">
+    <uie:Toolbar style="overflow: hidden; position: relative; width: 100%; flex-direction: row; min-height: 18px;">
         <Style src="SteamInspector_Style.uss" />
         <uie:ToolbarToggle label="Home" name="tglCmn" tooltip="Inspect the applicaiton as seen by Valve&apos;s Steamworks API" value="true" style="width: 100px; flex-shrink: 1; flex-grow: 0; max-width: none; justify-content: flex-start; flex-direction: row; left: -1px; margin-left: -1px;" />
-        <uie:ToolbarToggle label="Lobbies" name="tglLby" tooltip="Inspect the applicaiton as seen by Valve&apos;s Steamworks API" value="false" style="width: 100px; flex-shrink: 1; flex-grow: 0; max-width: none; justify-content: flex-start; flex-direction: row; left: -1px; margin-left: -1px; display: flex;" />
-        <uie:ToolbarToggle label="Inventory Editor" name="tglInv" tooltip="Inspect the applicaiton as seen by Valve&apos;s Steamworks API" value="false" style="width: 100px; flex-shrink: 1; flex-grow: 0; max-width: none; justify-content: flex-start; flex-direction: row; left: -1px; margin-left: -1px; display: flex;" />
+        <uie:ToolbarToggle label="Stats" name="tglStats" tooltip="Inspect the known stats for this app" value="false" style="width: 100px; flex-shrink: 1; flex-grow: 0; max-width: none; justify-content: flex-start; flex-direction: row; left: -1px; margin-left: -1px; display: flex;" />
+        <uie:ToolbarToggle label="Achievements" name="tglAch" tooltip="Inspect the known achievements for this app" value="false" style="width: 100px; flex-shrink: 1; flex-grow: 0; max-width: none; justify-content: flex-start; flex-direction: row; left: -1px; margin-left: -1px; display: flex;" />
+        <uie:ToolbarToggle label="Leaderboard" name="tglLeaderboard" tooltip="Inspect the known leaderboards for this app" value="false" style="width: 100px; flex-shrink: 1; flex-grow: 0; max-width: none; justify-content: flex-start; flex-direction: row; left: -1px; margin-left: -1px; display: flex;" />
+        <uie:ToolbarToggle label="DLC" name="tglDlc" tooltip="Inspect the known DLC for this app" value="false" style="width: 100px; flex-shrink: 1; flex-grow: 0; max-width: none; justify-content: flex-start; flex-direction: row; left: -1px; margin-left: -1px; display: flex;" />
+        <uie:ToolbarToggle label="Inventory" name="tglInventory" tooltip="Inspect the known inventory items for this app" value="false" style="width: 100px; flex-shrink: 1; flex-grow: 0; max-width: none; justify-content: flex-start; flex-direction: row; left: -1px; margin-left: -1px; display: flex;" />
+        <uie:ToolbarToggle label="Lobbies" name="tglLby" tooltip="Inspect the connected lobbies" value="false" style="width: 100px; flex-shrink: 1; flex-grow: 0; max-width: none; justify-content: flex-start; flex-direction: row; left: -1px; margin-left: -1px; display: flex;" />
     </uie:Toolbar>
     <ui:ScrollView name="pgCommon" show-vertical-scroller="false" show-horizontal-scroller="false" mode="VerticalAndHorizontal" style="flex-grow: 1; bottom: 0; display: flex; visibility: visible;">
         <Style src="SteamInspector_Style.uss" />
@@ -23,29 +27,44 @@
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="VisualElement" style="flex-direction: row; justify-content: flex-start;">
-                <ui:VisualElement name="imgAvatar" style="max-width: initial; max-height: initial; min-width: initial; min-height: initial; width: 40px; height: 40px; background-image: url(&apos;/Assets/_Heathen Engineering/Common/Images/General Icons/icons8-file-100.png&apos;); -unity-background-scale-mode: scale-to-fit;" />
-                <ui:VisualElement>
+                <ui:VisualElement name="imgAvatar" style="width: 64px; height: 64px;" />
+                <ui:VisualElement style="align-items: flex-end;">
                     <ui:Label text="CSteamID:" />
                     <ui:Label text="Name:" />
+                    <ui:Label text="Level:" />
+                    <ui:Label text="Rich Presence:" />
                 </ui:VisualElement>
-                <ui:VisualElement style="-unity-slice-left: 0; margin-left: 15px; min-width: 200px;">
+                <ui:VisualElement style="-unity-slice-left: 0; margin-left: 15px; min-width: 100px;">
                     <ui:Label text="0" name="lblCsteamId" />
                     <ui:Label text="unknown" name="lblUserName" />
+                    <ui:Label text="1" name="lblUserLevel" />
+                    <ui:Label text="NOT SET" name="lblUserPresence" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement style="flex-direction: column; padding-top: 30px;">
-            <ui:Label text="DLC: 0" name="lblDlcCount" usage-hints="GroupTransform" />
+    </ui:ScrollView>
+    <ui:VisualElement name="pgLobby" style="display: none; flex-grow: 1;">
+        <Style src="SteamInspector_Style.uss" />
+        <ui:IMGUIContainer name="lobbyContainer" />
+    </ui:VisualElement>
+    <ui:VisualElement name="pgDlc" style="display: none;">
+        <Style src="SteamInspector_Style.uss" />
+        <ui:VisualElement style="flex-direction: column;">
             <ui:VisualElement style="flex-direction: row;">
                 <ui:Label text="Name" style="width: 200px;" />
                 <ui:Label text="App Id" style="width: 150px;" />
-                <ui:Label text="Status" />
+                <ui:Label text="Subscribed" />
             </ui:VisualElement>
             <ui:VisualElement style="height: 1px; background-color: rgb(32, 32, 32);" />
         </ui:VisualElement>
-        <ui:VisualElement name="dlcContent" usage-hints="GroupTransform" />
-        <ui:VisualElement style="flex-direction: column; padding-top: 30px;">
-            <ui:Label text="Stats: 0" name="lblStatsCount" />
+        <ui:ScrollView style="display: flex;">
+            <ui:VisualElement name="dlcContent" usage-hints="GroupTransform" />
+        </ui:ScrollView>
+    </ui:VisualElement>
+    <ui:VisualElement name="pgStats" style="display: none;">
+        <Style src="SteamInspector_Style.uss" />
+        <ui:VisualElement style="flex-direction: column;">
+            <ui:Button text="Reset All" name="btResetAll" style="width: 75px;" />
             <ui:VisualElement style="flex-direction: row;">
                 <ui:Label text="Type" style="width: 50px;" />
                 <ui:Label text="Name" style="width: 200px;" />
@@ -53,9 +72,13 @@
             </ui:VisualElement>
             <ui:VisualElement style="height: 1px; background-color: rgb(32, 32, 32);" />
         </ui:VisualElement>
-        <ui:VisualElement name="statContent" />
-        <ui:VisualElement style="flex-direction: column; padding-top: 30px;">
-            <ui:Label text="Achievements: 0" name="lblAchCount" />
+        <ui:ScrollView style="display: flex;">
+            <ui:VisualElement name="statContent" />
+        </ui:ScrollView>
+    </ui:VisualElement>
+    <ui:VisualElement name="pgAchievements" style="display: none;">
+        <Style src="SteamInspector_Style.uss" />
+        <ui:VisualElement style="flex-direction: column;">
             <ui:VisualElement style="flex-direction: row;">
                 <ui:Label text="Name" style="width: 200px;" />
                 <ui:Label text="Id" style="width: 200px;" />
@@ -63,9 +86,14 @@
             </ui:VisualElement>
             <ui:VisualElement style="height: 1px; background-color: rgb(32, 32, 32);" />
         </ui:VisualElement>
-        <ui:VisualElement name="achContent" />
-        <ui:VisualElement style="flex-direction: column; padding-top: 30px;">
-            <ui:Label text="Leaderboards: 0" name="lblLdrBrdCount" />
+        <ui:ScrollView style="display: flex;">
+            <ui:VisualElement name="achContent" />
+        </ui:ScrollView>
+    </ui:VisualElement>
+    <ui:VisualElement name="pgLeaderboard" style="display: none;">
+        <Style src="SteamInspector_Style.uss" />
+        <ui:VisualElement style="flex-direction: column;">
+            <ui:Button text="Refresh" name="btBoardRefresh" style="width: 75px;" />
             <ui:VisualElement style="flex-direction: row;">
                 <ui:Label text="Name" style="width: 200px;" />
                 <ui:Label text="Id" style="width: 100px;" />
@@ -74,14 +102,23 @@
             </ui:VisualElement>
             <ui:VisualElement style="height: 1px; background-color: rgb(32, 32, 32);" />
         </ui:VisualElement>
-        <ui:VisualElement name="ldrBoardContent" />
-    </ui:ScrollView>
-    <ui:VisualElement name="pgInventory" style="flex-direction: column; align-items: stretch; flex-grow: 1; display: none;">
-        <Style src="SteamInspector_Style.uss" />
-        <ui:IMGUIContainer name="invContainer" style="flex-grow: 1; flex-direction: row; max-height: 100%; min-height: 100%;" />
+        <ui:ScrollView style="display: flex;">
+            <ui:VisualElement name="ldrBoardContent" />
+        </ui:ScrollView>
     </ui:VisualElement>
-    <ui:VisualElement name="pgLobby" style="display: none; flex-grow: 1;">
+    <ui:VisualElement name="pgInventory" style="display: none;">
         <Style src="SteamInspector_Style.uss" />
-        <ui:IMGUIContainer name="lobbyContainer" />
+        <ui:ScrollView style="display: flex;">
+            <ui:VisualElement style="flex-direction: column;">
+                <ui:VisualElement style="flex-direction: row;">
+                    <ui:Label text="Name" style="width: 200px;" />
+                    <ui:Label text="Id" style="width: 65px;" />
+                    <ui:Label text="Type" style="width: 50px;" />
+                    <ui:Label text="Owned" style="width: 150px;" />
+                </ui:VisualElement>
+                <ui:VisualElement style="height: 1px; background-color: rgb(32, 32, 32);" />
+            </ui:VisualElement>
+            <ui:VisualElement name="InvItemContent" />
+        </ui:ScrollView>
     </ui:VisualElement>
 </ui:UXML>

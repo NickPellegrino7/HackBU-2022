@@ -1,11 +1,12 @@
-﻿#if !DISABLESTEAMWORKS && HE_STEAMPLAYERSERVICES
+﻿#if !DISABLESTEAMWORKS && HE_STEAMCOMPLETE
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace HeathenEngineering.SteamAPI
+namespace HeathenEngineering.SteamworksIntegration
 {
     /// <summary>
     /// Abstract structure for game data models.
@@ -13,6 +14,7 @@ namespace HeathenEngineering.SteamAPI
     /// <remarks>
     /// See <see cref="DataModel{T}"/> for more informaiton on the usage of <see cref="DataModel"/>
     /// </remarks>
+    [HelpURL("https://kb.heathenengineering.com/assets/steamworks/data-models")]
     public abstract class DataModel : ScriptableObject
     {
         /// <summary>
@@ -25,37 +27,41 @@ namespace HeathenEngineering.SteamAPI
         /// </remarks>
         public string extension;
 
-        public UnityEvent dataUpdated;
-        
+        [Header("Events")]
+        public UnityEvent evtDataUpdated = new UnityEvent();
+
         [NonSerialized]
-        public RemoteStorageDataFile activeFile;
-        [NonSerialized]
-        public List<RemoteStorageSystem.FileAddress> availableFiles = new List<RemoteStorageSystem.FileAddress>();
+        public API.RemoteStorageFile[] availableFiles;
 
         /// <summary>
         /// Gets the base type of the data stored by this model
         /// </summary>
         public abstract Type DataType { get; }
 
+        public void Refresh()
+        {
+            availableFiles = API.RemoteStorage.Client.GetFiles(extension);
+        }
+
         public abstract void LoadByteArray(byte[] data);
 
         public abstract void LoadJson(string json);
 
-        public abstract void LoadFileAddress(RemoteStorageSystem.FileAddress addresss);
+        public abstract void LoadFileAddress(API.RemoteStorageFile addresss);
 
         public abstract void LoadFileAddress(string addresss);
 
-        public abstract void LoadFileAddressAsync(RemoteStorageSystem.FileAddress addresss, Action<bool> callback = null);
+        public abstract void LoadFileAddressAsync(API.RemoteStorageFile addresss, Action<bool> callback);
 
-        public abstract void LoadFileAddressAsync(string addresss, Action<bool> callback = null);
+        public abstract void LoadFileAddressAsync(string addresss, Action<bool> callback);
 
         public abstract byte[] ToByteArray();
 
         public abstract string ToJson();
 
-        public abstract void Save(string filename);
+        public abstract bool Save(string filename);
 
-        public abstract void SaveAsync(string filename, Action<bool> callback = null);
+        public abstract void SaveAsync(string filename, Action<RemoteStorageFileWriteAsyncComplete_t, bool> callback);
     }
 
     /// <summary>
@@ -102,7 +108,7 @@ namespace HeathenEngineering.SteamAPI
         public override void LoadByteArray(byte[] data)
         {
             this.data = JsonUtility.FromJson<T>(Encoding.UTF8.GetString(data));
-            dataUpdated.Invoke();
+            evtDataUpdated.Invoke();
         }
 
         /// <summary>
@@ -112,7 +118,7 @@ namespace HeathenEngineering.SteamAPI
         public override void LoadJson(string json)
         {
             data = JsonUtility.FromJson<T>(json);
-            dataUpdated.Invoke();
+            evtDataUpdated.Invoke();
         }
 
         /// <summary>
@@ -137,25 +143,14 @@ namespace HeathenEngineering.SteamAPI
         /// Starts an asynchronious save operation for the <see cref="data"/> of this object
         /// </summary>
         /// <remarks>
-        /// You can monitor <see cref="RemoteStorageSystem.evtFileWriteAsyncComplete"/> to know when this operation has completed.
         /// This will add <see cref="DataModel.extension"/> to the end of the name if required.
         /// </remarks>
-        /// <param name="filename"></param>
-        public override void SaveAsync(string filename, Action<bool> callback = null)
+        public override void SaveAsync(string filename, Action<RemoteStorageFileWriteAsyncComplete_t, bool> callback)
         {
-            RemoteStorageDataFile dataFile;
             if (filename.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
-                dataFile = RemoteStorageSystem.FileWriteAsync(filename, ToByteArray());
+                API.RemoteStorage.Client.FileWriteAsync(filename, ToByteArray(), callback);
             else
-                dataFile = RemoteStorageSystem.FileWriteAsync(filename + extension, ToByteArray());
-
-            if (callback != null)
-            {
-                dataFile.Complete = (r) =>
-                {
-                    callback.Invoke(r.result == global::Steamworks.EResult.k_EResultOK);
-                };
-            }
+                API.RemoteStorage.Client.FileWriteAsync(filename + extension, ToByteArray(), callback);
         }
 
         /// <summary>
@@ -165,22 +160,22 @@ namespace HeathenEngineering.SteamAPI
         /// This will add <see cref="DataModel.extension"/> to the end of the name if required.
         /// </remarks>
         /// <param name="filename"></param>
-        public override void Save(string filename)
+        public override bool Save(string filename)
         {
             if (filename.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
-                RemoteStorageSystem.FileWrite(filename, ToByteArray());
+                return API.RemoteStorage.Client.FileWrite(filename, ToByteArray());
             else
-                RemoteStorageSystem.FileWrite(filename + extension, ToByteArray());
+                return API.RemoteStorage.Client.FileWrite(filename + extension, ToByteArray());
         }
 
         /// <summary>
         /// Loads data from the address provided into <see cref="data"/>
         /// </summary>
         /// <param name="addresss">The address to load from</param>
-        public override void LoadFileAddress(RemoteStorageSystem.FileAddress addresss)
+        public override void LoadFileAddress(API.RemoteStorageFile addresss)
         {
-            data = RemoteStorageSystem.FileReadJson<T>(addresss, Encoding.UTF8);
-            dataUpdated.Invoke();
+            data = API.RemoteStorage.Client.FileReadJson<T>(addresss.name, Encoding.UTF8);
+            evtDataUpdated?.Invoke();
         }
 
         /// <summary>
@@ -188,18 +183,19 @@ namespace HeathenEngineering.SteamAPI
         /// </summary>
         /// <param name="addresss">The address to load from</param>
         /// <param name="callback">An action to invoke when the process is complete, this can be null</param>
-        public override void LoadFileAddressAsync(RemoteStorageSystem.FileAddress addresss, Action<bool> callback = null)
+        public override void LoadFileAddressAsync(API.RemoteStorageFile addresss, Action<bool> callback)
         {
-            var dataFile = RemoteStorageSystem.FileReadAsync(addresss);
-            dataFile.dataModel = this;
-
-            if (callback != null)
+            API.RemoteStorage.Client.FileReadAsync(addresss.name, (r, e) =>
             {
-                dataFile.Complete = (r) =>
+                if (!e)
                 {
-                    callback.Invoke(r.result == global::Steamworks.EResult.k_EResultOK);
-                };
-            }
+                    var JsonString = System.Text.Encoding.UTF8.GetString(r);
+                    data = JsonUtility.FromJson<T>(JsonString);
+                    evtDataUpdated?.Invoke();
+                }
+                else
+                    callback?.Invoke(!e);
+            });
         }
 
         /// <summary>
@@ -208,8 +204,8 @@ namespace HeathenEngineering.SteamAPI
         /// <param name="addresss">The address to load from</param>
         public override void LoadFileAddress(string addresss)
         {
-            data = RemoteStorageSystem.FileReadJson<T>(addresss, Encoding.UTF8);
-            dataUpdated.Invoke();
+            data = API.RemoteStorage.Client.FileReadJson<T>(addresss, Encoding.UTF8);
+            evtDataUpdated?.Invoke();
         }
 
         /// <summary>
@@ -217,18 +213,19 @@ namespace HeathenEngineering.SteamAPI
         /// </summary>
         /// <param name="addresss">The address to load from</param>
         /// <param name="callback">An action to invoke when the process is complete, this can be null</param>
-        public override void LoadFileAddressAsync(string addresss, Action<bool> callback = null)
+        public override void LoadFileAddressAsync(string addresss, Action<bool> callback)
         {
-            var dataFile = RemoteStorageSystem.FileReadAsync(addresss);
-            dataFile.dataModel = this;
-
-            if (callback != null)
+            API.RemoteStorage.Client.FileReadAsync(addresss, (r,e) =>
             {
-                dataFile.Complete = (r) =>
+                if (!e)
                 {
-                    callback.Invoke(r.result == global::Steamworks.EResult.k_EResultOK);
-                };
-            }
+                    var JsonString = System.Text.Encoding.UTF8.GetString(r);
+                    data = JsonUtility.FromJson<T>(JsonString);
+                    evtDataUpdated?.Invoke();
+                }
+                else
+                    callback?.Invoke(!e);
+            });
         }
     }
 }

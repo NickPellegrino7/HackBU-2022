@@ -1,9 +1,9 @@
-﻿#if !DISABLESTEAMWORKS && HE_STEAMPLAYERSERVICES && HE_STEAMCOMPLETE
+﻿#if !DISABLESTEAMWORKS && HE_STEAMCOMPLETE
 #if MIRROR
 #endif
 
 
-namespace HeathenEngineering.SteamAPI
+namespace HeathenEngineering.SteamworksIntegration
 {
     /// <summary>
     /// Enumberator used in Game Server Browser searches

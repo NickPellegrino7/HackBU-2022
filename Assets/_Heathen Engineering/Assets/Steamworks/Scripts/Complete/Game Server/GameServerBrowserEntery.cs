@@ -1,4 +1,4 @@
-﻿#if !DISABLESTEAMWORKS && HE_STEAMPLAYERSERVICES && HE_STEAMCOMPLETE
+﻿#if !DISABLESTEAMWORKS && HE_STEAMCOMPLETE
 #if MIRROR
 using Mirror;
 #endif
@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
-namespace HeathenEngineering.SteamAPI
+namespace HeathenEngineering.SteamworksIntegration
 {
     /// <summary>
     /// Represents the data from the Game Server Browser
@@ -19,9 +19,9 @@ namespace HeathenEngineering.SteamAPI
     public class GameServerBrowserEntery : gameserveritem_t
     {
         /// <summary>
-        /// Returns the IP address as a string via the <see cref="SteamSettings.IPUintToString(uint)"/> feature
+        /// Returns the IP address as a string via the <see cref="API.Utilities.IPUintToString(uint)"/> feature
         /// </summary>
-        public string IpAddress => SteamSettings.IPUintToString(m_NetAdr.GetIP());
+        public string IpAddress => API.Utilities.IPUintToString(m_NetAdr.GetIP());
         /// <summary>
         /// Returns the query port registered for the server
         /// </summary>
@@ -67,9 +67,9 @@ namespace HeathenEngineering.SteamAPI
         /// </summary>
         public int Version => m_nServerVersion;
         /// <summary>
-        /// Returns the last played value as a date time using the <see cref="SteamSettings.ConvertUnixDate(uint)"/> method
+        /// Returns the last played value as a date time
         /// </summary>
-        public DateTime LastPlayed => SteamSettings.ConvertUnixDate(m_ulTimeLastPlayed);
+        public DateTime LastPlayed => new DateTime(1970, 1, 1).AddSeconds(m_ulTimeLastPlayed);
         /// <summary>
         /// The discription listed on the server
         /// </summary>
@@ -102,8 +102,6 @@ namespace HeathenEngineering.SteamAPI
         /// event invoked when the server's data is updated
         /// </summary>
         public UnityEvent evtDataUpdated = new UnityEvent();
-        [Obsolete("Use evtDataUpdated instead")]
-        public UnityEvent DataUpdated => evtDataUpdated;
 
         public GameServerBrowserEntery(gameserveritem_t item)
         {

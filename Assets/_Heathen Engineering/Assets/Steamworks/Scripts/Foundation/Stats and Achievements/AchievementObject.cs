@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace HeathenEngineering.SteamAPI
+namespace HeathenEngineering.SteamworksIntegration
 {
     /// <summary>
     /// A <see cref="ScriptableObject"/> containing the definition of a Steamworks Achievement.
@@ -15,86 +15,112 @@ namespace HeathenEngineering.SteamAPI
     /// for more information please see <a href="https://partner.steamgames.com/doc/features/achievements">https://partner.steamgames.com/doc/features/achievements</a>
     /// </para>
     /// </remarks>
+    [HelpURL("https://kb.heathenengineering.com/assets/steamworks/achievement-object")]
     [CreateAssetMenu(menuName = "Steamworks/Achievement Object")]
     public class AchievementObject : ScriptableObject
     {
+        public string Id
+        {
+            get => achievementId;
+#if UNITY_EDITOR
+            set => achievementId = value;
+#endif
+        }
+
+        public string Name
+        {
+            get => displayName;
+#if UNITY_EDITOR
+            set => displayName = value;
+#endif
+        }
+
+        public string Description
+        {
+            get => displayDescription;
+#if UNITY_EDITOR
+            set => displayDescription = value;
+#endif
+        }
+
+        public bool Hidden
+        {
+            get => hidden;
+#if UNITY_EDITOR
+            set => hidden = value;
+#endif
+        }
+
         /// <summary>
         /// The API Name as it appears in the Steamworks portal.
         /// </summary>
-        public string achievementId;
+        [HideInInspector]
+        [SerializeField]
+        private string achievementId;
 
-#if !CONDITIONAL_COMPILE || !UNITY_SERVER
         /// <summary>
         /// Indicates that this achievment has been unlocked by this user.
         /// </summary>
         /// <remarks>
         /// Only available on client builds
         /// </remarks>
-        [NonSerialized]
-        public bool isAchieved;
+        public bool IsAchieved
+        {
+            get
+            {
+                if (API.StatsAndAchievements.Client.GetAchievement(achievementId, out bool status))
+                    return status;
+                else
+                    return false;
+            }
+            set
+            {
+                if (value)
+                    API.StatsAndAchievements.Client.SetAchievement(achievementId);
+                else
+                    API.StatsAndAchievements.Client.ClearAchievement(achievementId);
+            }
+        }
         /// <summary>
         /// The display name for this achievement.
         /// </summary>
         /// <remarks>
         /// Only available on client builds
         /// </remarks>
-        [NonSerialized]
-        public string displayName;
+        [HideInInspector]
+        [SerializeField]
+        private string displayName;
         /// <summary>
         /// The display description for this achievement.
         /// </summary>
         /// <remarks>
         /// Only available on client builds
         /// </remarks>
-        [NonSerialized]
-        public string displayDescription;
+        [HideInInspector]
+        [SerializeField]
+        private string displayDescription;
         /// <summary>
         /// Is this achievement a hidden achievement.
         /// </summary>
         /// <remarks>
         /// Only available on client builds
         /// </remarks>
-        [NonSerialized]
-        public bool hidden;
-        /// <summary>
-        /// Occures when this achivement has been unlocked.
-        /// </summary>
-        /// <remarks>
-        /// Only available on client builds
-        /// </remarks>
-        public UnityEvent OnUnlock;
+        [HideInInspector]
+        [SerializeField]
+        private bool hidden;
 
         /// <summary>
         /// <para>Unlocks the achievement.</para>
         /// <a href="https://partner.steamgames.com/doc/api/ISteamUserStats#SetAchievement">https://partner.steamgames.com/doc/api/ISteamUserStats#SetAchievement</a>
         /// </summary>
-        /// <remarks>
-        /// Only available on client builds
-        /// </remarks>
-        public void Unlock()
-        { 
-            if (!isAchieved)
-            {
-                isAchieved = true;
-                SteamUserStats.SetAchievement(achievementId);
-                OnUnlock.Invoke();
-            }
-        }
+        public void Unlock() => IsAchieved = true;
 
         /// <summary>
         /// <para>Resets the unlock status of an achievmeent.</para>
         /// <a href="https://partner.steamgames.com/doc/api/ISteamUserStats#ClearAchievement">https://partner.steamgames.com/doc/api/ISteamUserStats#ClearAchievement</a>
         /// </summary>
-        /// <remarks>
-        /// Only available on client builds
-        /// </remarks>
-        public void ClearAchievement()
-        {
-            isAchieved = false;
-            SteamUserStats.ClearAchievement(achievementId);
-        }
-#endif
-#if UNITY_SERVER || UNITY_EDITOR
+        public void ClearAchievement() => IsAchieved = false;
+
         /// <summary>
         /// Unlock the achievement for the <paramref name="user"/>
         /// </summary>
@@ -104,7 +130,7 @@ namespace HeathenEngineering.SteamAPI
         /// <param name="user"></param>
         public void Unlock(CSteamID user)
         {
-            SteamGameServerStats.SetUserAchievement(user, achievementId);
+            API.StatsAndAchievements.Server.SetUserAchievement(user, achievementId);
         }
 
         /// <summary>
@@ -116,7 +142,7 @@ namespace HeathenEngineering.SteamAPI
         /// <param name="user"></param>
         public void ClearAchievement(CSteamID user)
         {
-            SteamGameServerStats.ClearUserAchievement(user, achievementId);
+            API.StatsAndAchievements.Server.ClearUserAchievement(user, achievementId);
         }
 
         /// <summary>
@@ -130,10 +156,12 @@ namespace HeathenEngineering.SteamAPI
         public bool GetAchievementStatus(CSteamID user)
         {
             bool achieved;
-            SteamGameServerStats.GetUserAchievement(user, achievementId, out achieved);
+            API.StatsAndAchievements.Server.GetUserAchievement(user, achievementId, out achieved);
             return achieved;
         }
-#endif
+
+        public void Store() => API.StatsAndAchievements.Client.StoreStats();
+
     }
 }
 #endif

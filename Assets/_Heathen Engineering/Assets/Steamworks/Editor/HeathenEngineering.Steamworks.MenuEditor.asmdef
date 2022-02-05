@@ -1,7 +1,7 @@
 {
     "name": "HeathenEngineering.Steamworks.MenuEditor",
     "references": [
-        "GUID:50d9a125f13b9cd4f9cc515a48046be2"
+        "GUID:68bd7fdb68ef2684e982e8a9825b18a5"
     ],
     "includePlatforms": [
         "Editor"

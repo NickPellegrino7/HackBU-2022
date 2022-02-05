@@ -1,11 +1,11 @@
-﻿#if !DISABLESTEAMWORKS && HE_STEAMPLAYERSERVICES
+﻿#if !DISABLESTEAMWORKS && HE_STEAMCOMPLETE
 using System;
 using UnityEngine.Events;
 
-namespace HeathenEngineering.SteamAPI
+namespace HeathenEngineering.SteamworksIntegration
 {
     [Serializable]
-    public class UnityLeaderboardRankChangeEvent : UnityEvent<LeaderboardRankChangeData>
+    public class UnityLeaderboardRankChangeEvent : UnityEvent<RankChange>
     { }
 }
 #endif

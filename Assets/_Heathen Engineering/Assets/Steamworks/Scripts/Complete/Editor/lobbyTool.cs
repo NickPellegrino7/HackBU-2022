@@ -1,9 +1,9 @@
-﻿#if !DISABLESTEAMWORKS && HE_STEAMPLAYERSERVICES && HE_STEAMCOMPLETE
+﻿#if !DISABLESTEAMWORKS && HE_STEAMCOMPLETE
 using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace HeathenEngineering.SteamAPI.Editors
+namespace HeathenEngineering.SteamworksIntegration.Editors
 {
     public class LobbyIMGUITool
     {
@@ -15,34 +15,27 @@ namespace HeathenEngineering.SteamAPI.Editors
 
         public void OnGUI()
         {
-            if(Application.isPlaying)
+            if (Application.isPlaying)
             {
-                if(MatchmakingTools.Initalized)
+                if (API.Matchmaking.Client.memberOfLobbies != null)
                 {
-                    if(MatchmakingTools.lobbies != null)
+                    if (API.Matchmaking.Client.memberOfLobbies.Count > 0)
                     {
-                        if(MatchmakingTools.lobbies.Count > 0)
-                        {
-                            DrawWindow();
-                        }
-                        else
-                        {
-                            EditorGUILayout.HelpBox("Steamworks Lobby Tools is initalized!\n No lobbies currently connected.", MessageType.Info);
-                        }
+                        DrawWindow();
                     }
                     else
                     {
-                        EditorGUILayout.HelpBox("Steamworks Lobby Tools is initalized however the lobbies collection is null, this indicates an issue with the initalizaiton process, please contact Heathen Support on Discord.", MessageType.Warning);
+                        EditorGUILayout.HelpBox("Steamworks Lobby Tools is initialized!\n No lobbies currently connected.", MessageType.Info);
                     }
                 }
                 else
                 {
-                    EditorGUILayout.HelpBox("Steamworks Lobby Tools not initalized!\nThe lobby inspector only works in play mode and when the SteamworksLobbyTool system has been initalized.", MessageType.Info);
+                    EditorGUILayout.HelpBox("Steamworks Lobby Tools is initialized however the lobbies collection is null, this indicates an issue with the initalizaiton process, please contact Heathen Support on Discord.", MessageType.Warning);
                 }
             }
             else
             {
-                EditorGUILayout.HelpBox("The lobby inspector only works in play mode and when the Steamworks Lobby Tools system has been initalized.", MessageType.Info);
+                EditorGUILayout.HelpBox("The lobby inspector only works in play mode and when the Steamworks Lobby Tools system has been initialized.", MessageType.Info);
             }
         }
 
@@ -52,21 +45,18 @@ namespace HeathenEngineering.SteamAPI.Editors
             ListLobbies();
             EditorGUILayout.EndHorizontal();
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
-            LobbyDetails(MatchmakingTools.lobbies[lobbyIndex]);
+            LobbyDetails(API.Matchmaking.Client.memberOfLobbies[lobbyIndex]);
             EditorGUILayout.EndScrollView();
         }
 
         private void ListLobbies()
         {
-            for (int i = 0; i < MatchmakingTools.lobbies.Count; i++)
+            for (int i = 0; i < API.Matchmaking.Client.memberOfLobbies.Count; i++)
             {
-                var lobby = MatchmakingTools.lobbies[i];
+                var lobby = API.Matchmaking.Client.memberOfLobbies[i];
 
-                if (lobby != null)
-                {
-                    if (DrawLobbyEntry(lobby, lobbyIndex == i))
-                        lobbyIndex = i;
-                }
+                if (DrawLobbyEntry(lobby, lobbyIndex == i))
+                    lobbyIndex = i;
             }
         }
 
@@ -84,7 +74,7 @@ namespace HeathenEngineering.SteamAPI.Editors
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.Space();
-            var entries = lobby.GetMetadataEntries();
+            var entries = lobby.GetMetadata();
             EditorGUILayout.LabelField("Metadata: (" + entries.Count + ")");
 
             EditorGUI.indentLevel++;
@@ -97,11 +87,12 @@ namespace HeathenEngineering.SteamAPI.Editors
             EditorGUI.indentLevel--;
 
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Members: (" + lobby.members.Count + ")");
+            var members = lobby.Members;
+            EditorGUILayout.LabelField("Members: (" + members.Length + ")");
 
             EditorGUI.indentLevel++;
 
-            foreach (var member in lobby.members)
+            foreach (var member in members)
             {
                 ListUserDetails(member);
             }
@@ -115,23 +106,23 @@ namespace HeathenEngineering.SteamAPI.Editors
         private void ListUserDetails(LobbyMember member)
         {
             EditorGUILayout.BeginHorizontal();
-            GUILayout.Box(member.userData.avatar, GUILayout.Width(64), GUILayout.Height(64));
+            GUILayout.Box(member.user.Avatar, GUILayout.Width(64), GUILayout.Height(64));
 
             EditorGUILayout.BeginVertical();
             
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PrefixLabel("User ID: ");
-            EditorGUILayout.SelectableLabel(member.userData.id.ToString(), GUILayout.Height(18));
+            EditorGUILayout.SelectableLabel(member.user.cSteamId.ToString(), GUILayout.Height(18));
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PrefixLabel("Display Name: ");
-            EditorGUILayout.SelectableLabel(member.userData.DisplayName, GUILayout.Height(18));
+            EditorGUILayout.SelectableLabel(member.user.Name, GUILayout.Height(18));
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PrefixLabel("User Level: ");
-            EditorGUILayout.SelectableLabel(member.userData.Level.ToString(), GUILayout.Height(18));
+            EditorGUILayout.SelectableLabel(member.user.Level.ToString(), GUILayout.Height(18));
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
@@ -150,12 +141,11 @@ namespace HeathenEngineering.SteamAPI.Editors
 
         private bool DrawLobbyEntry(Lobby lobby, bool selected)
         {
-            if (MatchmakingTools.normalLobby == lobby)
-                return GUILayout.Toggle(selected, "Normal: " + lobby.id.ToString(), EditorStyles.toolbarButton, GUILayout.ExpandWidth(false));
-            else if (MatchmakingTools.groupLobby == lobby)
-                return GUILayout.Toggle(selected, "Group: " + lobby.id.ToString(), EditorStyles.toolbarButton, GUILayout.ExpandWidth(false));
-            else
-                return GUILayout.Toggle(selected, "Invisible: " + lobby.id.ToString(), EditorStyles.toolbarButton, GUILayout.ExpandWidth(false));
+            var typeString = lobby[Lobby.DataType];
+            if (string.IsNullOrEmpty(typeString))
+                typeString = "Unknown Type";
+
+            return GUILayout.Toggle(selected, typeString + ": " + lobby.id.ToString(), EditorStyles.toolbarButton, GUILayout.ExpandWidth(false));
         }
     }
 }

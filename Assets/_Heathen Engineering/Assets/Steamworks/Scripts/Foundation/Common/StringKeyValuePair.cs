@@ -1,8 +1,6 @@
-﻿#if !DISABLESTEAMWORKS
-using System;
-using System.Linq;
+﻿using System;
 
-namespace HeathenEngineering.SteamAPI
+namespace HeathenEngineering.SteamworksIntegration
 {
 
     [Serializable]
@@ -12,4 +10,3 @@ namespace HeathenEngineering.SteamAPI
         public string value;
     }
 }
-#endif

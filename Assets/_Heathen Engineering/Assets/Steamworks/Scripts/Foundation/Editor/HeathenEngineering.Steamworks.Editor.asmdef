@@ -3,11 +3,9 @@
     "references": [
         "Mirror",
         "HeathenEngineering.Core",
-        "HeathenEngineering.Core.Toolbox",
-        "HeathenEngineering.Core.UIX",
-        "Steamworks.NET",
         "HeathenEngineering.Steamworks",
-        "HeathenEngineering.Steamworks.Complete.Editor"
+        "HeathenEngineering.Steamworks.Complete.Editor",
+        "com.rlabrecque.steamworks.net"
     ],
     "includePlatforms": [
         "Editor"

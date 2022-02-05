@@ -2,12 +2,9 @@
     "name": "HeathenEngineering.Steamworks.Complete.Editor",
     "references": [
         "HeathenEngineering.Core",
-        "HeathenEngineering.Core.Toolbox",
-        "HeathenEngineering.Core.UIX",
-        "Steamworks.NET",
-        "HeathenEngineering.Steamworks"
+        "HeathenEngineering.Steamworks",
+        "com.rlabrecque.steamworks.net"
     ],
-    "optionalUnityReferences": [],
     "includePlatforms": [
         "Editor"
     ],
@@ -16,5 +13,7 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": []
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

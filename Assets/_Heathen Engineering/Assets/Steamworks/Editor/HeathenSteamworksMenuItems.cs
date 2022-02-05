@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace HeathenEngineering.SteamAPI.Editors
+namespace HeathenEngineering.SteamworksIntegration.Editors
 {
     public class HeathenSteamworksMenuItems
     {

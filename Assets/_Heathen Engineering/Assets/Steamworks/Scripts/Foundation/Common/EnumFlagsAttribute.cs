@@ -1,7 +1,7 @@
 ﻿#if !DISABLESTEAMWORKS
 using UnityEngine;
 
-namespace HeathenEngineering.SteamAPI
+namespace HeathenEngineering.SteamworksIntegration
 {
     public class EnumFlagsAttribute : PropertyAttribute
     {
