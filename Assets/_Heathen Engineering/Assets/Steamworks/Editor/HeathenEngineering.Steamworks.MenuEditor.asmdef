@@ -1,0 +1,17 @@
+{
+    "name": "HeathenEngineering.Steamworks.MenuEditor",
+    "references": [
+        "GUID:50d9a125f13b9cd4f9cc515a48046be2"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

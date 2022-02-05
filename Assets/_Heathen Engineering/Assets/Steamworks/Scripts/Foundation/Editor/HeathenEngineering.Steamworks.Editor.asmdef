@@ -1,0 +1,23 @@
+{
+    "name": "HeathenEngineering.Steamworks.Editor",
+    "references": [
+        "Mirror",
+        "HeathenEngineering.Core",
+        "HeathenEngineering.Core.Toolbox",
+        "HeathenEngineering.Core.UIX",
+        "Steamworks.NET",
+        "HeathenEngineering.Steamworks",
+        "HeathenEngineering.Steamworks.Complete.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

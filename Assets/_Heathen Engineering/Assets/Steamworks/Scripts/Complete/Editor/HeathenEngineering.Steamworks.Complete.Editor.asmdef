@@ -1,0 +1,20 @@
+{
+    "name": "HeathenEngineering.Steamworks.Complete.Editor",
+    "references": [
+        "HeathenEngineering.Core",
+        "HeathenEngineering.Core.Toolbox",
+        "HeathenEngineering.Core.UIX",
+        "Steamworks.NET",
+        "HeathenEngineering.Steamworks"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

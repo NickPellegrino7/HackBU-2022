@@ -1,0 +1,37 @@
+﻿#if !DISABLESTEAMWORKS && HE_STEAMPLAYERSERVICES && HE_STEAMCOMPLETE && !UNITY_SERVER
+using HeathenEngineering.Events;
+
+using HeathenEngineering.SteamAPI.UI;
+using UnityEngine;
+
+namespace HeathenEngineering.SteamAPI.Demo
+{
+    /// <summary>
+    /// Demonstrates the concept of commands
+    /// This is an example command handler meaning it defines the methods that get called when a command is detected.
+    /// </summary>
+    public class CommandHandler : MonoBehaviour
+    {
+        public SteamSettings steamSettings;
+        public LobbyChat lobbyChat;
+        public GameEvent sayMyNameEvent;
+        public StringGameEvent echoThisEvent;
+
+        private void Start()
+        {
+            sayMyNameEvent.AddListener(SayMyName);
+            echoThisEvent.AddListener(echoThisMessage);
+        }
+
+        private void echoThisMessage(EventData<string> message)
+        {
+            lobbyChat.SendSystemMessage("Heathen Engineer", "You want me to say \"" + message + "\"\nOkay " + message.value.ToUpper() + "!!!");
+        }
+
+        private void SayMyName(EventData data)
+        {
+            lobbyChat.SendSystemMessage("Heathen Engineer", "Your name is " + steamSettings.client.user.DisplayName);
+        }
+    }
+}
+#endif
