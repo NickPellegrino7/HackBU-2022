@@ -32,10 +32,13 @@ public class JudgeScript : MonoBehaviour
     void Start()
     {
       PlayerPrefs.SetInt("ToMainScene", 1);
-      numSubmissions = 5; // for testing
-      for(int i = 1; i < (numSubmissions+1); i ++){
-        int getID = PlayerPrefs.GetInt("ChosenGet" + i.ToString(), i);
-        int butID = PlayerPrefs.GetInt("ChosenBut" + i.ToString(), i);
+      for(int i = 1; i < 9; i ++){
+        int getID = PlayerPrefs.GetInt("ChosenGet" + i.ToString(), -1);
+        int butID = PlayerPrefs.GetInt("ChosenBut" + i.ToString(), -1);
+
+        if(getID == -1 || butID == -1){
+          continue;
+        }
 
         Card butCard = Instantiate(butBackPrefab).GetComponent<Card>();
         butCard.Initialize(butID);
@@ -61,6 +64,7 @@ public class JudgeScript : MonoBehaviour
     public void WinnerChosen() {
         PlayerPrefs.SetInt("RoundGetWinner", currentGet.Id);
         PlayerPrefs.SetInt("RoundButWinner", currentBut.Id);
+        PlayerPrefs.SetString("RoundWinnerName", "Player " + (currentSetIndex + 1).ToString());
         SceneManager.LoadScene("Scenes/RoundWinScreen.unity");
     }
 
