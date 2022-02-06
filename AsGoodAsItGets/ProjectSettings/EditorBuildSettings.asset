@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Hand&Deck/Scenes/Title Scene.unity.unity
     guid: 09cfcac9a725140db86f9a9c06031b2b
   - enabled: 1
-    path: Assets/Scenes/Demo.unity
+    path: Assets/Scenes/Main.unity
     guid: ebbb174112334274b8b29c3e8e3f61be
   - enabled: 1
     path: Assets/Scenes/SelectBots.unity.unity
