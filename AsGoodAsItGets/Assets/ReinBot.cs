@@ -18,7 +18,7 @@ public class ReinBot : MonoBehaviour
 
     public List<Card> GetCards = new List<Card>();
     public List<Card> ButCards = new List<Card>();
-    
+
 
     // Start is called before the first frame update
     void Start()
@@ -48,6 +48,32 @@ public class ReinBot : MonoBehaviour
         // string result = chooseBut("G7", buts_in_hand);
         // Debug.Log(result);
     }
+
+    int chooseWinner(string[] getCards, string[] butCards) { // parameters should be parallel, and at least size 2
+			// pick the shittiest combo because that means the but card wasn't very good
+			float mostShitIndex = 0;
+			int[] get_state = getState(getCards[mostShitIndex]);
+			int[] but_state = getState(butCards[mostShitIndex]);
+			float mostShitValue = Q_Values[get_state[0],get_state[1],but_state[0],but_state[1]];
+			for (int i = 1; i < getCards.length; i++) {
+				get_state = getState(getCards[mostShitIndex]);
+				but_state = getState(butCards[mostShitIndex]);
+				float q_value = Q_Values[get_state[0],get_state[1],but_state[0],but_state[1]];
+				if (q_value < mostShitValue) {
+					mostShitValue = q_value;
+					mostShitIndex = i;
+				} else if (q_value == mostShitValue) {
+					System.Random rnd = new System.Random();
+			    int num = rnd.Next(0,3);
+					// If quality is equally low, give a < 50% change to switch
+					if (num == 0) {
+						mostShitValue = q_value;
+						mostShitIndex = i;
+					}
+				}
+			}
+			return mostShitIndex;
+		}
 
     int[] getState(string card) {
         // card = "G2" or "B17"
@@ -80,7 +106,7 @@ public class ReinBot : MonoBehaviour
         Q_Values[get_state[0],get_state[1],but_state[0],but_state[1]] = new_value;
     }
 
-    public string chooseBut(string get) { // buts_in_hand should be length 4        
+    public string chooseBut(string get) { // buts_in_hand should be length 4
         string[] buts_in_hand = new string [4];
         int i = 0;
         foreach(Card card in ButCards)
@@ -111,10 +137,10 @@ public class ReinBot : MonoBehaviour
         return best_but;
     }
 
-    public Card PickRandomGet() 
+    public Card PickRandomGet()
     {
 		System.Random rnd = new System.Random();
-        int num = rnd.Next(4);
+        int num = rnd.Next(0,4);
 
         Card card = GetCards[num];
         GetCards.RemoveAt(num);
