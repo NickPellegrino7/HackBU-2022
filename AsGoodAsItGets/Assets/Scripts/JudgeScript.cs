@@ -60,7 +60,7 @@ public class JudgeScript : MonoBehaviour
       CardSwitcheroo();
 
       int judgeIndex = PlayerPrefs.GetInt("JudgeIndex", -1);
-      judgeIndex = 1;
+      //judgeIndex = 1;
 
       if(judgeIndex != 0){
         StartCoroutine(botJudging(-1));
