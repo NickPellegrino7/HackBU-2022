@@ -16,9 +16,13 @@ public class DemoScript : MonoBehaviour
     public CardsPile butDiscard;
     public CardsPile getDiscard;
 
+		public CardsPile displayDeck;
+		private Card displayCard;
+
     public GameObject [] playerPrefabs = new GameObject [8];
     public GameObject butBackPrefab;
     public GameObject getBackPrefab;
+		public GameObject displayPrefab;
 
     public TextMeshProUGUI JudgeName;
 
@@ -35,19 +39,28 @@ public class DemoScript : MonoBehaviour
     private Card _myCard;
     private List<Card> _botCards = new List<Card>();
 
+
+    public GameObject botsHolder;
+
     void Start()
     {
         nBots = 4;// PlayerPrefs.GetInt("NumOpponents");
         for (int i = 0; i < nBots; i++)
 		{
-            ReinBot bot = new ReinBot();
+            GameObject go = new GameObject();
+            GameObject botGo = Instantiate(go, botsHolder.transform);
+            ReinBot bot = botGo.AddComponent<ReinBot>();
             bots.Add(bot);
 		}
+
+		displayCard = Instantiate(displayPrefab).GetComponent<Card>();
+		displayDeck.Add(displayCard, false);
 
         for (int i = 1; i < deckSize + 1; i++)
         {
             Card card = Instantiate(getBackPrefab).GetComponent<Card>();
             card.Initialize(i);
+						card.GetComponent<MouseCard>().SetDisplay(displayCard);
 
             getDeck.Add(card, false);
         }
@@ -56,6 +69,7 @@ public class DemoScript : MonoBehaviour
         {
             Card card = Instantiate(butBackPrefab).GetComponent<Card>();
             card.Initialize(i);
+						card.GetComponent<MouseCard>().SetDisplay(displayCard);
 
             butDeck.Add(card, false);
         }
@@ -74,7 +88,7 @@ public class DemoScript : MonoBehaviour
                 Card card = getDeck.Cards[getDeck.Cards.Count - 1];
                 getDiscard.Add(card);
                 getDeck.Remove(card);
-                
+
                 bot.GetCards.Add(card);
 
                 card = butDeck.Cards[butDeck.Cards.Count - 1];
@@ -83,9 +97,9 @@ public class DemoScript : MonoBehaviour
 
                 bot.ButCards.Add(card);
             }
-            
+
 		}
-        
+
     }
 
     private IEnumerator DealCards()
@@ -168,7 +182,7 @@ public class DemoScript : MonoBehaviour
             if(Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, ~LayerMask.NameToLayer("Default"), QueryTriggerInteraction.Collide))
 			{
                 Card card = hit.collider.GetComponent<Card>();
-				if (card)
+				if ((card) && (card.GetComponentInChildren<SpriteRenderer>().enabled) && (!card.GetComponent<MouseCard>().isDisplay)) // check a card exists under the mouse, and that card is face-up, and it's not the display card
 				{
                     if(card.Type == "Get")
 					{
@@ -176,7 +190,7 @@ public class DemoScript : MonoBehaviour
                         getCenter.Add(card);
                         getHand.Remove(card);
                         _getSelected = true;
-                        
+
                         _myCard = card;
                         SubmitGetCard();
                     }
@@ -188,12 +202,21 @@ public class DemoScript : MonoBehaviour
                         butHand.Remove(card);
                         _butSelected = true;
 
+                        foreach(ReinBot bot in bots)
+						{
+                            Card getcard = getCenter.Cards[0];
+                            string getString = "G" + getcard.Id.ToString();
+                            string butString = "B" + card.Id.ToString();
+                            bot.learnExperience(getString, butString);
+                        }
+
+
                         SubmitButCard();
                     }
 
-                    
+
 				}
-			}            	    
+			}
         }
 	}
 

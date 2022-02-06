@@ -11,13 +11,24 @@ public class MouseCard : MonoBehaviour
     public int mouseOver = -1;
     public bool active = true;
     public float state = 1;
+    public bool isDisplay = false;
+    private Card displayCard;
 
     public void SetState(float num) {
       state = num;
     }
 
+    public void SetDisplay(Card card) {
+      displayCard = card;
+    }
+
     async void AnimateUp()
     {
+      if (displayCard != null) {
+        if (image.GetComponentInChildren<SpriteRenderer>().enabled) {
+          displayCard.GetComponent<MouseCard>().image.GetComponentInChildren<SpriteRenderer>().sprite = image.GetComponentInChildren<SpriteRenderer>().sprite;
+        }
+      }
       bool ready = false;
       while(ready == false) {
         await Task.Delay(TimeSpan.FromSeconds(waitTime));
@@ -62,17 +73,23 @@ public class MouseCard : MonoBehaviour
 
     void OnMouseEnter()
     {
-      AnimateUp();
+      if (!isDisplay) {
+        AnimateUp();
+      }
     }
 
     void OnMouseOver()
     {
-      mouseOver = 0;
+      if (!isDisplay) {
+        mouseOver = 0;
+      }
     }
 
     void OnMouseExit()
     {
-      AnimateDown();
+      if (!isDisplay) {
+        AnimateDown();
+      }
     }
 
     async void Update()

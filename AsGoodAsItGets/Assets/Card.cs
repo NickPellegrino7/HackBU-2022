@@ -36,7 +36,7 @@ public class Card : MonoBehaviour
             _spriteRenderer.enabled = true;
             _meshRenderer.enabled = false;
         }
-        
+
     }
 
 }

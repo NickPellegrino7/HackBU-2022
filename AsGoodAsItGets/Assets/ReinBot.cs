@@ -66,7 +66,7 @@ public class ReinBot : MonoBehaviour
         Q_Values[get[0],get[1],but[0],but[1]] = new_value;
     }
 
-    void learnExperience(string get, string but) {
+    public void learnExperience(string get, string but) {
         int[] get_state = getState(get);
         int[] but_state = getState(but);
         float q_value = Q_Values[get_state[0],get_state[1],but_state[0],but_state[1]];
@@ -84,6 +84,7 @@ public class ReinBot : MonoBehaviour
         foreach(Card card in ButCards)
 		{
             buts_in_hand[i] = "B" + card.Id.ToString();
+            i++;
 		}
         int[] get_state = getState(get);
         int[] but_state = getState(buts_in_hand[0]);

@@ -87,7 +87,7 @@ public class CardsPile : MonoBehaviour
 	void UpdatePositions()
 	{
 		float radius = Mathf.Abs(height) < 0.001f
-			? width * width / 0.001f * Mathf.Sign(height) 
+			? width * width / 0.001f * Mathf.Sign(height)
 			: height / 2f + width * width / (8f * height);
 
 		float angle = 2f * Mathf.Asin(0.5f * width / radius) * Mathf.Rad2Deg;
@@ -138,5 +138,19 @@ public class CardsPile : MonoBehaviour
 	void OnValidate()
 	{
 		updatePositions = true;
+	}
+
+	public int getCount()
+	{
+		return cards.Count;
+	}
+
+	public void DestroyAllCards()
+	{
+		while(cards.Count > 0) {
+			Card myCard = cards[0];
+			Remove(myCard);
+			Destroy(myCard);
+		}
 	}
 }
