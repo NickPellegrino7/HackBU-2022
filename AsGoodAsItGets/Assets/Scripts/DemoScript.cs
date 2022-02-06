@@ -35,12 +35,17 @@ public class DemoScript : MonoBehaviour
     private Card _myCard;
     private List<Card> _botCards = new List<Card>();
 
+
+    public GameObject botsHolder;
+
     void Start()
     {
         nBots = 4;// PlayerPrefs.GetInt("NumOpponents");
         for (int i = 0; i < nBots; i++)
 		{
-            ReinBot bot = new ReinBot();
+            GameObject go = new GameObject();
+            GameObject botGo = Instantiate(go, botsHolder.transform);
+            ReinBot bot = botGo.AddComponent<ReinBot>();
             bots.Add(bot);
 		}
 
@@ -187,6 +192,15 @@ public class DemoScript : MonoBehaviour
                         butCenter.Add(card);
                         butHand.Remove(card);
                         _butSelected = true;
+
+                        foreach(ReinBot bot in bots)
+						{
+                            Card getcard = getCenter.Cards[0];
+                            string getString = "G" + getcard.Id.ToString();
+                            string butString = "B" + card.Id.ToString();
+                            bot.learnExperience(getString, butString);
+                        }
+                        
 
                         SubmitButCard();
                     }
