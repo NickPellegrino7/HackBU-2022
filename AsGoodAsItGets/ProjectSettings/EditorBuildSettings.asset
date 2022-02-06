@@ -4,5 +4,14 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Hand&Deck/Scenes/Instructions.unity.unity
+    guid: 3f31baa977fb94312beb5e596e545b20
+  - enabled: 1
+    path: Assets/Hand&Deck/Scenes/Title Scene.unity.unity
+    guid: 09cfcac9a725140db86f9a9c06031b2b
+  - enabled: 1
+    path: Assets/Scenes/Demo.unity
+    guid: ebbb174112334274b8b29c3e8e3f61be
   m_configObjects: {}
