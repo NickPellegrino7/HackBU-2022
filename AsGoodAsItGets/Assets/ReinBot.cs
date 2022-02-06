@@ -50,34 +50,34 @@ public class ReinBot : MonoBehaviour
     }
 
     public int chooseWinner(string[] getCards, string[] butCards) { // parameters should be parallel, and at least size 2, and some cards shouldn't be "" (empty)
-			// pick the shittiest combo because that means the but card wasn't very good
-			int mostShitIndex = 0;
-      while (getCards[mostShitIndex] == "") {
-				mostShitIndex++;
+			// pick the worst combo because that means the but card wasn't very good
+			int mostbadIndex = 0;
+      while (getCards[mostbadIndex] == "") {
+				mostbadIndex++;
 			}
-			int[] get_state = getState(getCards[mostShitIndex]);
-			int[] but_state = getState(butCards[mostShitIndex]);
-			float mostShitValue = Q_Values[get_state[0],get_state[1],but_state[0],but_state[1]];
+			int[] get_state = getState(getCards[mostbadIndex]);
+			int[] but_state = getState(butCards[mostbadIndex]);
+			float mostbadValue = Q_Values[get_state[0],get_state[1],but_state[0],but_state[1]];
 			for (int i = 0; i < getCards.Length; i++) {
-				if (getCards[mostShitIndex] != "") {
-					get_state = getState(getCards[mostShitIndex]);
-					but_state = getState(butCards[mostShitIndex]);
+				if (getCards[mostbadIndex] != "") {
+					get_state = getState(getCards[mostbadIndex]);
+					but_state = getState(butCards[mostbadIndex]);
 					float q_value = Q_Values[get_state[0],get_state[1],but_state[0],but_state[1]];
-					if (q_value < mostShitValue) {
-						mostShitValue = q_value;
-						mostShitIndex = i;
-					} else if (q_value == mostShitValue) {
+					if (q_value < mostbadValue) {
+						mostbadValue = q_value;
+						mostbadIndex = i;
+					} else if (q_value == mostbadValue) {
 						System.Random rnd = new System.Random();
 				    int num = rnd.Next(0,3);
 						// If quality is equally low, give a < 50% change to switch
 						if (num == 0) {
-							mostShitValue = q_value;
-							mostShitIndex = i;
+							mostbadValue = q_value;
+							mostbadIndex = i;
 						}
 					}
 				}
 			}
-			return mostShitIndex;
+			return mostbadIndex;
 		}
 
     int[] getState(string card) {
