@@ -49,26 +49,31 @@ public class ReinBot : MonoBehaviour
         // Debug.Log(result);
     }
 
-    int chooseWinner(string[] getCards, string[] butCards) { // parameters should be parallel, and at least size 2
+    int chooseWinner(string[] getCards, string[] butCards) { // parameters should be parallel, and at least size 2, and some cards shouldn't be "" (empty)
 			// pick the shittiest combo because that means the but card wasn't very good
 			float mostShitIndex = 0;
+      while (getCards[mostShitIndex] == "") {
+				mostShitIndex++;
+			}
 			int[] get_state = getState(getCards[mostShitIndex]);
 			int[] but_state = getState(butCards[mostShitIndex]);
 			float mostShitValue = Q_Values[get_state[0],get_state[1],but_state[0],but_state[1]];
-			for (int i = 1; i < getCards.length; i++) {
-				get_state = getState(getCards[mostShitIndex]);
-				but_state = getState(butCards[mostShitIndex]);
-				float q_value = Q_Values[get_state[0],get_state[1],but_state[0],but_state[1]];
-				if (q_value < mostShitValue) {
-					mostShitValue = q_value;
-					mostShitIndex = i;
-				} else if (q_value == mostShitValue) {
-					System.Random rnd = new System.Random();
-			    int num = rnd.Next(0,3);
-					// If quality is equally low, give a < 50% change to switch
-					if (num == 0) {
+			for (int i = 0; i < getCards.length; i++) {
+				if (getCards[mostShitIndex] != "") {
+					get_state = getState(getCards[mostShitIndex]);
+					but_state = getState(butCards[mostShitIndex]);
+					float q_value = Q_Values[get_state[0],get_state[1],but_state[0],but_state[1]];
+					if (q_value < mostShitValue) {
 						mostShitValue = q_value;
 						mostShitIndex = i;
+					} else if (q_value == mostShitValue) {
+						System.Random rnd = new System.Random();
+				    int num = rnd.Next(0,3);
+						// If quality is equally low, give a < 50% change to switch
+						if (num == 0) {
+							mostShitValue = q_value;
+							mostShitIndex = i;
+						}
 					}
 				}
 			}
