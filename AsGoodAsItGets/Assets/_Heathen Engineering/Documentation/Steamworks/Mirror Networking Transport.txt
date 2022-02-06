@@ -1,0 +1,13 @@
+Heathen has worked with the authors of Fizzy Steam Transport to make it compatable with Heathen's Steamworks.
+
+As a result there is no longer any need for custom code or custom transports. You should install Mirror as normal, either from GitHub or from the Unity Package Manager.
+
+https://github.com/vis2k/Mirror/releases
+
+And then install the latest version of Fizzy's Steam Transport.
+
+https://github.com/Chykary/FizzySteamworks/archive/refs/heads/master.zip
+
+**Note: we strongly recomend you do not install Fizzy Steam Transport from the Unity Package found in its GitHub releases rather you should download the code and drag it into your project.
+
+The reason is the release package may include a copy of Steamworks.NET that has been modified and is likely to cause various issues.**
