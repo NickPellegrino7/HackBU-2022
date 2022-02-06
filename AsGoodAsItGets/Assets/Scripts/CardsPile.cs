@@ -11,7 +11,7 @@ public class CardsPile : MonoBehaviour
 	public float yPerCard = -0.005f;
 	public float zDistance;
 
-	public float moveDuration = 0.5f;
+	public float moveDuration = 1f;
 	public Transform cardHolderPrefab;
 
 	readonly List<Card> cards = new List<Card>();
@@ -22,8 +22,15 @@ public class CardsPile : MonoBehaviour
 
 	readonly List<Transform> cardsHolders = new List<Transform>();
 
+	public bool _dontDestroyOnLoad = false;
+
 	bool updatePositions;
 	readonly List<Card> forceSetPosition = new List<Card>();
+
+	private void Start()
+	{
+		if (_dontDestroyOnLoad) DontDestroyOnLoad(this.gameObject);
+	}
 
 	public void Add(Card card, bool moveAnimation = true) => Add(card, -1, moveAnimation);
 

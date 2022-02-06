@@ -40,6 +40,8 @@ public class ReinBot : MonoBehaviour
             }
         }
 
+        DontDestroyOnLoad(this.gameObject);
+
         // Example :D
         // learnExperience("G7", "B5");
         // string[] buts_in_hand = {"B99", "B2", "B5", "B88"};
@@ -93,14 +95,19 @@ public class ReinBot : MonoBehaviour
         string best_but = buts_in_hand[0];
         float best_q_value = Q_Values[get_state[0],get_state[1],but_state[0],but_state[1]];
 
+        int bestIndex = 0;
         for (i = 1; i < 4; i++) {
             but_state = getState(buts_in_hand[i]);
             float new_q_value = Q_Values[get_state[0],get_state[1],but_state[0],but_state[1]];
             if (new_q_value > best_q_value) {
                 best_q_value = new_q_value;
                 best_but = buts_in_hand[i];
+                bestIndex = i;
             }
         }
+
+        ButCards.RemoveAt(bestIndex);
+
         return best_but;
     }
 

@@ -16,13 +16,13 @@ public class DemoScript : MonoBehaviour
     public CardsPile butDiscard;
     public CardsPile getDiscard;
 
-		public CardsPile displayDeck;
-		private Card displayCard;
+	public CardsPile displayDeck;
+	private Card displayCard;
 
     public GameObject [] playerPrefabs = new GameObject [8];
     public GameObject butBackPrefab;
     public GameObject getBackPrefab;
-		public GameObject displayPrefab;
+	public GameObject displayPrefab;
 
     public TextMeshProUGUI JudgeName;
 
@@ -36,31 +36,44 @@ public class DemoScript : MonoBehaviour
     public List<ReinBot> bots = new List<ReinBot>();
     public int nBots;
 
-    private Card _myCard;
     private List<Card> _botCards = new List<Card>();
 
+    private Card yourGet;
+    private Card yourBut;
 
     public GameObject botsHolder;
 
     void Start()
     {
-        nBots = 4;// PlayerPrefs.GetInt("NumOpponents");
-        for (int i = 0; i < nBots; i++)
+        if(PlayerPrefs.GetInt("ToMainScene", 0) == 0){
+            FullStart();
+		}
+		else
 		{
+            Restart();
+		}
+    }
+
+    private void FullStart()
+	{
+        nBots = PlayerPrefs.GetInt("NumOpponents", 4);
+        for (int i = 0; i < nBots; i++)
+        {
             GameObject go = new GameObject();
             GameObject botGo = Instantiate(go, botsHolder.transform);
             ReinBot bot = botGo.AddComponent<ReinBot>();
             bots.Add(bot);
-		}
+        }
 
-		displayCard = Instantiate(displayPrefab).GetComponent<Card>();
-		displayDeck.Add(displayCard, false);
+        displayCard = Instantiate(displayPrefab).GetComponent<Card>();
+        displayDeck.Add(displayCard, false);
 
         for (int i = 1; i < deckSize + 1; i++)
         {
             Card card = Instantiate(getBackPrefab).GetComponent<Card>();
+            card.gameObject.name = card.gameObject.name + i.ToString();
             card.Initialize(i);
-						card.GetComponent<MouseCard>().SetDisplay(displayCard);
+            card.GetComponent<MouseCard>().SetDisplay(displayCard);
 
             getDeck.Add(card, false);
         }
@@ -68,23 +81,27 @@ public class DemoScript : MonoBehaviour
         for (int i = 1; i < deckSize + 1; i++)
         {
             Card card = Instantiate(butBackPrefab).GetComponent<Card>();
+            card.gameObject.name = card.gameObject.name + i.ToString();
             card.Initialize(i);
-						card.GetComponent<MouseCard>().SetDisplay(displayCard);
+            card.GetComponent<MouseCard>().SetDisplay(displayCard);
 
             butDeck.Add(card, false);
         }
 
-        for(int i = nBots+1 ; i < 8; i++)
-		{
+        ShuffleDecks();
+
+
+        for (int i = nBots + 1; i < 8; i++)
+        {
             playerPrefabs[i].SetActive(false);
-		}
+        }
 
         StartCoroutine(DealCards());
 
         foreach (ReinBot bot in bots)
-		{
+        {
             for (int i = 0; i < 4; i++)
-			{
+            {
                 Card card = getDeck.Cards[getDeck.Cards.Count - 1];
                 getDiscard.Add(card);
                 getDeck.Remove(card);
@@ -97,19 +114,62 @@ public class DemoScript : MonoBehaviour
 
                 bot.ButCards.Add(card);
             }
+        }
+    }
 
-		}
+    private void Restart()
+	{
+        nBots = 4;// PlayerPrefs.GetInt("NumOpponents");
+        bots = new List<ReinBot>(FindObjectsOfType<ReinBot>());
 
+        //displayCard = Instantiate(displayPrefab).GetComponent<Card>();
+        //displayDeck.Add(displayCard, false);
+
+        CardsPile[] piles = FindObjectsOfType<CardsPile>();
+
+		foreach (CardsPile pile in piles)
+		{
+            if (pile.gameObject.name == "GetDeck") getDeck = pile;
+            else if (pile.gameObject.name == "ButDeck") butDeck = pile;
+            else if (pile.gameObject.name == "GetHand") getHand = pile;
+            else if (pile.gameObject.name == "ButHand") butHand = pile;
+            else if (pile.gameObject.name == "GetDiscard") getDiscard = pile;
+            else if (pile.gameObject.name == "ButDiscard") butDiscard = pile;
+            else if (pile.gameObject.name == "GetCenter") getCenter = pile;
+            else if (pile.gameObject.name == "ButCenter") butCenter = pile;
+        }
+
+        for (int i = nBots + 1; i < 8; i++)
+        {
+            playerPrefabs[i].SetActive(false);
+        }
+
+        StartCoroutine(DealCards());
+
+        foreach (ReinBot bot in bots)
+        {
+            Card card = getDeck.Cards[getDeck.Cards.Count - 1];
+            getDiscard.Add(card);
+            getDeck.Remove(card);
+
+            bot.GetCards.Add(card);
+
+            card = butDeck.Cards[butDeck.Cards.Count - 1];
+            butDiscard.Add(card);
+            butDeck.Remove(card);
+
+            bot.ButCards.Add(card);
+        }
     }
 
     private IEnumerator DealCards()
 	{
-        for (int i = 0; i < 4; i++)
+        for (int i = getHand.Cards.Count; i < 4; i++)
         {
             yield return new WaitForSeconds(.2f);
             SpawnGetCard();
         }
-        for (int i = 0; i < 4; i++)
+        for (int i = butHand.Cards.Count; i < 4; i++)
         {
             yield return new WaitForSeconds(.2f);
             SpawnButCard();
@@ -191,7 +251,7 @@ public class DemoScript : MonoBehaviour
                         getHand.Remove(card);
                         _getSelected = true;
 
-                        _myCard = card;
+                        yourGet = card;
                         SubmitGetCard();
                     }
 					else
@@ -201,20 +261,16 @@ public class DemoScript : MonoBehaviour
                         butCenter.Add(card);
                         butHand.Remove(card);
                         _butSelected = true;
-
-                        foreach(ReinBot bot in bots)
+                        yourBut = card;
+                        foreach (ReinBot bot in bots)
 						{
                             Card getcard = getCenter.Cards[0];
                             string getString = "G" + getcard.Id.ToString();
                             string butString = "B" + card.Id.ToString();
                             bot.learnExperience(getString, butString);
                         }
-
-
                         SubmitButCard();
                     }
-
-
 				}
 			}
         }
@@ -223,12 +279,15 @@ public class DemoScript : MonoBehaviour
     private void SubmitGetCard()
 	{
         //List<Card> botcards = new List<Card>();
-
+        int i = 2;
         foreach (ReinBot bot in bots)
 		{
             Card card = bot.PickRandomGet();
+            PlayerPrefs.SetInt("ChosenGet" + i.ToString(),  card.Id);
             _botCards.Add(card);
+            i++;
 		}
+        PlayerPrefs.SetInt("ChosenGet0", yourGet.Id);
 
         playerPrefabs[0].GetComponentInChildren<Image>().enabled = true;
         StartCoroutine(SetOpponentCheckmarks());
@@ -245,14 +304,16 @@ public class DemoScript : MonoBehaviour
 		}
 
         passInCard();
-	}
+        yield return new WaitForSeconds(1f);
+        RecieveGetCard();
+
+    }
 
     private void passInCard()
 	{
-        getDiscard.Add(_myCard);
-        getCenter.Remove(_myCard);
+        getDiscard.Add(yourGet);
+        getCenter.Remove(yourGet);
 
-        RecieveGetCard();
     }
 
     private void RecieveGetCard()
@@ -272,13 +333,40 @@ public class DemoScript : MonoBehaviour
         {
             if(i == 0)
 			{
-                bot.chooseBut("G" + _myCard.Id.ToString());
-			}
-			else
+                bot.chooseBut("G" + yourBut.Id.ToString());
+                PlayerPrefs.SetInt("ChosenBut" + i.ToString(), yourBut.Id);
+            }
+            else
 			{
                 bot.chooseBut("G" + _botCards[i-1].Id.ToString());
+                PlayerPrefs.SetInt("ChosenBut" + i.ToString(), _botCards[i - 1].Id);
             }
             i++;
+        }
+    }
+
+    private void ShuffleDecks()
+    {
+        System.Random rnd = new System.Random();
+        for (int i = 0; i < getDeck.Cards.Count * 2; i++)
+		{
+            int index1 = rnd.Next(getDeck.Cards.Count);
+            int index2 = rnd.Next(getDeck.Cards.Count);
+
+            Card c1 = getDeck.Cards[index1];
+            getDeck.RemoveAt(index1);
+            getDeck.Add(c1, index2);
+
+        }
+
+        for (int i = 0; i < butDeck.Cards.Count; i++)
+        {
+            int index1 = rnd.Next(butDeck.Cards.Count);
+            int index2 = rnd.Next(butDeck.Cards.Count);
+
+            Card c1 = butDeck.Cards[index1];
+            butDeck.RemoveAt(index1);
+            butDeck.Add(c1, index2);
         }
     }
 }

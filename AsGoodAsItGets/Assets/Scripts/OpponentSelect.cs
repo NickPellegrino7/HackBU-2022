@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -12,18 +13,13 @@ public class OpponentSelect : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        PlayerPrefs.SetInt("ToMainScene", 0);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     public void UpdateOpponentNumber()
     {
-      Text opponentText = OpponentTextBox.GetComponent<Text>();
+      TextMeshProUGUI opponentText = OpponentTextBox.GetComponent<TextMeshProUGUI>();
       int NumOpponents = (int)Slider.GetComponent<Slider>().value;
       opponentText.text = NumOpponents.ToString();
       PlayerPrefs.SetInt("NumOpponents", NumOpponents);
