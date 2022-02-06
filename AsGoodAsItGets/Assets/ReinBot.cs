@@ -16,6 +16,10 @@ public class ReinBot : MonoBehaviour
 
     private IDictionary<string, int[]> cardValues = new Dictionary<string, int[]>();
 
+    public List<Card> GetCards = new List<Card>();
+    public List<Card> ButCards = new List<Card>();
+    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -41,12 +45,6 @@ public class ReinBot : MonoBehaviour
         // string[] buts_in_hand = {"B99", "B2", "B5", "B88"};
         // string result = chooseBut("G7", buts_in_hand);
         // Debug.Log(result);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     int[] getState(string card) {
@@ -80,7 +78,13 @@ public class ReinBot : MonoBehaviour
         Q_Values[get_state[0],get_state[1],but_state[0],but_state[1]] = new_value;
     }
 
-    string chooseBut(string get, string[] buts_in_hand) { // buts_in_hand should be length 4
+    public string chooseBut(string get) { // buts_in_hand should be length 4        
+        string[] buts_in_hand = new string [4];
+        int i = 0;
+        foreach(Card card in ButCards)
+		{
+            buts_in_hand[i] = "B" + card.Id.ToString();
+		}
         int[] get_state = getState(get);
         int[] but_state = getState(buts_in_hand[0]);
         float q_value = Q_Values[get_state[0],get_state[1],but_state[0],but_state[1]];
@@ -88,7 +92,7 @@ public class ReinBot : MonoBehaviour
         string best_but = buts_in_hand[0];
         float best_q_value = Q_Values[get_state[0],get_state[1],but_state[0],but_state[1]];
 
-        for (int i = 1; i < 4; i++) {
+        for (i = 1; i < 4; i++) {
             but_state = getState(buts_in_hand[i]);
             float new_q_value = Q_Values[get_state[0],get_state[1],but_state[0],but_state[1]];
             if (new_q_value > best_q_value) {
@@ -97,5 +101,16 @@ public class ReinBot : MonoBehaviour
             }
         }
         return best_but;
+    }
+
+    public Card PickRandomGet() 
+    {
+		System.Random rnd = new System.Random();
+        int num = rnd.Next(4);
+
+        Card card = GetCards[num];
+        GetCards.RemoveAt(num);
+
+        return card;
     }
 }
