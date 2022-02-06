@@ -60,6 +60,14 @@ public class ReinBot : MonoBehaviour
 				if (q_value < mostShitValue) {
 					mostShitValue = q_value;
 					mostShitIndex = i;
+				} else if (q_value == mostShitValue) {
+					System.Random rnd = new System.Random();
+			    int num = rnd.Next(0,3);
+					// If quality is equally low, give a < 50% change to switch
+					if (num == 0) {
+						mostShitValue = q_value;
+						mostShitIndex = i;
+					}
 				}
 			}
 			return mostShitIndex;
