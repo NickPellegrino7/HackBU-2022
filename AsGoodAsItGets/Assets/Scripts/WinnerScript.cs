@@ -13,7 +13,7 @@ public class WinnerScript : MonoBehaviour
     void Start()
     {
       TextMeshProUGUI winnerText = WinnerText.GetComponent<TextMeshProUGUI>();
-      string winner = PlayerPrefs.GetString("Winner", "No One");
+      string winner = PlayerPrefs.GetString("OverallWinner", "No One");
       winnerText.text = winner + " Wins!";
     }
 
