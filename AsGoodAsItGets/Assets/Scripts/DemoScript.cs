@@ -3,6 +3,7 @@ using System.Collections;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class DemoScript : MonoBehaviour
 {
@@ -43,6 +44,8 @@ public class DemoScript : MonoBehaviour
 
     public GameObject botsHolder;
 
+    private int judgeIndex;
+
     void Start()
     {
         if(PlayerPrefs.GetInt("ToMainScene", 0) == 0){
@@ -52,6 +55,7 @@ public class DemoScript : MonoBehaviour
 		{
             Restart();
 		}
+        judgeIndex = PlayerPrefs.GetInt("JudgeIndex", 1);
     }
 
     private void FullStart()
@@ -125,18 +129,49 @@ public class DemoScript : MonoBehaviour
         //displayCard = Instantiate(displayPrefab).GetComponent<Card>();
         //displayDeck.Add(displayCard, false);
 
-        CardsPile[] piles = FindObjectsOfType<CardsPile>();
+        CardsPile[] piles = FindObjectsOfType<CardsPile>(true);
 
 		foreach (CardsPile pile in piles)
 		{
-            if (pile.gameObject.name == "GetDeck") getDeck = pile;
-            else if (pile.gameObject.name == "ButDeck") butDeck = pile;
-            else if (pile.gameObject.name == "GetHand") getHand = pile;
-            else if (pile.gameObject.name == "ButHand") butHand = pile;
-            else if (pile.gameObject.name == "GetDiscard") getDiscard = pile;
-            else if (pile.gameObject.name == "ButDiscard") butDiscard = pile;
-            else if (pile.gameObject.name == "GetCenter") getCenter = pile;
-            else if (pile.gameObject.name == "ButCenter") butCenter = pile;
+            if (pile.gameObject.name == "GetDeck")
+            {
+                pile.gameObject.SetActive(true);
+                getDeck = pile;
+            }
+            else if (pile.gameObject.name == "ButDeck")
+            {
+                pile.gameObject.SetActive(true);
+                butDeck = pile;
+            }
+            else if (pile.gameObject.name == "GetHand")
+            {
+                getHand = pile;
+            }
+            else if (pile.gameObject.name == "ButHand")
+            {
+                pile.gameObject.SetActive(true);
+                butHand = pile;
+            }
+            else if (pile.gameObject.name == "GetDiscard")
+            {
+                pile.gameObject.SetActive(true);
+                getDiscard = pile;
+            }
+            else if (pile.gameObject.name == "ButDiscard")
+            {
+                pile.gameObject.SetActive(true);
+                butDiscard = pile;
+            }
+            else if (pile.gameObject.name == "GetCenter")
+            {
+                pile.gameObject.SetActive(true);
+                getCenter = pile;
+            }
+            else if (pile.gameObject.name == "ButCenter")
+            {
+                pile.gameObject.SetActive(true);
+                butCenter = pile;
+            }
         }
 
         for (int i = nBots + 1; i < 8; i++)
@@ -270,6 +305,7 @@ public class DemoScript : MonoBehaviour
                             bot.learnExperience(getString, butString);
                         }
                         SubmitButCard();
+                        SceneManager.LoadScene("Scenes/Judge");
                     }
 				}
 			}
@@ -282,9 +318,18 @@ public class DemoScript : MonoBehaviour
         int i = 2;
         foreach (ReinBot bot in bots)
 		{
-            Card card = bot.PickRandomGet();
-            PlayerPrefs.SetInt("ChosenGet" + i.ToString(),  card.Id);
-            _botCards.Add(card);
+            
+            if(i-1 == judgeIndex)
+			{
+                PlayerPrefs.SetInt("ChosenGet" + i.ToString(), -1);
+                _botCards.Add(null);
+			}
+			else
+			{
+                Card card = bot.PickRandomGet();
+                PlayerPrefs.SetInt("ChosenGet" + i.ToString(), card.Id);
+                _botCards.Add(card);
+			}
             i++;
 		}
         PlayerPrefs.SetInt("ChosenGet0", yourGet.Id);
@@ -304,21 +349,27 @@ public class DemoScript : MonoBehaviour
 		}
 
         passInCard();
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(.5f);
         RecieveGetCard();
-
     }
 
     private void passInCard()
 	{
         getDiscard.Add(yourGet);
         getCenter.Remove(yourGet);
-
     }
 
     private void RecieveGetCard()
 	{
-        Card card = _botCards[nBots - 1];
+        Card card;
+        if (judgeIndex == nBots)
+		{
+            card = _botCards[nBots - 2];
+        }
+        else
+		{
+            card = _botCards[nBots - 1];
+		}
         card.Flip();
         getCenter.Add(card);
         getDiscard.Remove(card);
@@ -328,21 +379,50 @@ public class DemoScript : MonoBehaviour
 
     private void SubmitButCard()
 	{
-        int i = 0;
-        foreach (ReinBot bot in bots)
-        {
+        PlayerPrefs.SetInt("Chosenbut0", yourBut.Id);
+
+        for (int i = 0; i < bots.Count; i++)
+		{
             if(i == 0)
 			{
-                bot.chooseBut("G" + yourBut.Id.ToString());
-                PlayerPrefs.SetInt("ChosenBut" + i.ToString(), yourBut.Id);
-            }
-            else
+                if(i+1 == judgeIndex)
+				{
+                    bots[i+1].chooseBut("G" + yourBut.Id.ToString());
+                    PlayerPrefs.SetInt("ChosenBut" + i.ToString(), -1);
+                    PlayerPrefs.SetInt("ChosenBut" + i+1.ToString(), -1);
+                    i++;
+                }
+				else
+				{
+                    bots[i].chooseBut("G" + yourBut.Id.ToString());
+                    PlayerPrefs.SetInt("ChosenBut" + i.ToString(), yourBut.Id);
+                }
+			}
+			else
 			{
-                bot.chooseBut("G" + _botCards[i-1].Id.ToString());
-                PlayerPrefs.SetInt("ChosenBut" + i.ToString(), _botCards[i - 1].Id);
+                if (i + 1 == judgeIndex)
+                {
+                    if(judgeIndex == nBots)
+					{
+                        bots[i + 1].chooseBut("G" + yourBut.Id.ToString());
+                        PlayerPrefs.SetInt("ChosenBut" + i.ToString(), -1);
+                        i++;
+                    }
+					else
+					{
+                        bots[i+1].chooseBut("G" + _botCards[i - 1].Id.ToString());
+                        PlayerPrefs.SetInt("ChosenBut" + i.ToString(), -1);
+                        PlayerPrefs.SetInt("ChosenBut" + i+1.ToString(), _botCards[i-1 - 1].Id);
+                        i++;
+					}
+                }
+				else
+				{
+                    bots[i].chooseBut("G" + _botCards[i - 1].Id.ToString());
+                    PlayerPrefs.SetInt("ChosenBut" + i.ToString(), _botCards[i - 1].Id);
+                }
             }
-            i++;
-        }
+		}
     }
 
     private void ShuffleDecks()

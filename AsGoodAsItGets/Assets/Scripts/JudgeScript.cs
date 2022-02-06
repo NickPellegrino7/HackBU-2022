@@ -34,7 +34,23 @@ public class JudgeScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-      PlayerPrefs.SetInt("ToMainScene", 1);
+
+        CardsPile [] piles = FindObjectsOfType<CardsPile>(true);
+        foreach (CardsPile pile in piles)
+        {
+            if (pile.gameObject.name == "GetDeck") pile.gameObject.SetActive(false);
+            else if (pile.gameObject.name == "ButDeck") pile.gameObject.SetActive(false);
+            else if (pile.gameObject.name == "GetHand") pile.gameObject.SetActive(false);
+            else if (pile.gameObject.name == "ButHand") pile.gameObject.SetActive(false);
+            else if (pile.gameObject.name == "GetDiscard") pile.gameObject.SetActive(false);
+            else if (pile.gameObject.name == "ButDiscard") pile.gameObject.SetActive(false);
+            else if (pile.gameObject.name == "GetCenter") pile.gameObject.SetActive(false);
+            else if (pile.gameObject.name == "ButCenter") pile.gameObject.SetActive(false);
+        }
+
+
+
+        PlayerPrefs.SetInt("ToMainScene", 1);
       for(int i = 1; i < 9; i ++){
         int getID = PlayerPrefs.GetInt("ChosenGet" + i.ToString(), i);
         int butID = PlayerPrefs.GetInt("ChosenBut" + i.ToString(), i);
@@ -77,6 +93,7 @@ public class JudgeScript : MonoBehaviour
           Card butCard = butCards[i];
 
           if (!getCard){
+                    i++;
             continue;
           }
 

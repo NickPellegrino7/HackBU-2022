@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 750549916}
-  m_IndirectSpecularColor: {r: 0.44300655, g: 0.49219543, b: 0.57192427, a: 1}
+  m_IndirectSpecularColor: {r: 0.44300693, g: 0.49219602, b: 0.5719254, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -620,7 +620,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 154716392489267949, guid: 9d4e56682334b604cb7a721795e6c3f8, type: 3}
       propertyPath: m_Name
-      value: GetCenter
+      value: GetCenter1
       objectReference: {fileID: 0}
     - target: {fileID: 154716392489267950, guid: 9d4e56682334b604cb7a721795e6c3f8, type: 3}
       propertyPath: zDistance
@@ -876,7 +876,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 154716392489267949, guid: 9d4e56682334b604cb7a721795e6c3f8, type: 3}
       propertyPath: m_Name
-      value: ButHand
+      value: ButHand1
       objectReference: {fileID: 0}
     - target: {fileID: 154716392489267951, guid: 9d4e56682334b604cb7a721795e6c3f8, type: 3}
       propertyPath: m_RootOrder
@@ -1308,7 +1308,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 154716392489267949, guid: 9d4e56682334b604cb7a721795e6c3f8, type: 3}
       propertyPath: m_Name
-      value: ButCenter
+      value: ButCenter1
       objectReference: {fileID: 0}
     - target: {fileID: 154716392489267950, guid: 9d4e56682334b604cb7a721795e6c3f8, type: 3}
       propertyPath: zDistance
@@ -2557,7 +2557,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2234615528166303505, guid: bd0131360d7b5e345bf86a8a48f7f457, type: 3}
       propertyPath: m_Name
-      value: GetHand
+      value: GetHand1
       objectReference: {fileID: 0}
     - target: {fileID: 2234615528166303506, guid: bd0131360d7b5e345bf86a8a48f7f457, type: 3}
       propertyPath: m_Controller

@@ -14,6 +14,7 @@ public class OpponentSelect : MonoBehaviour
     void Start()
     {
         PlayerPrefs.SetInt("ToMainScene", 0);
+        PlayerPrefs.SetInt("JudgeIndex", 1);
     }
 
 
