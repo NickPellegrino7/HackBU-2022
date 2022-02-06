@@ -12,16 +12,9 @@ public class DemoScript : MonoBehaviour
     public CardsPile butDeck;
     public CardsPile getDeck;
 
+    public GameObject [] playerPrefabs = new GameObject [8];
     public GameObject butBackPrefab;
     public GameObject getBackPrefab;
-    public GameObject player1Prefab;
-    public GameObject player2Prefab;
-    public GameObject player3Prefab;
-    public GameObject player4Prefab;
-    public GameObject player5Prefab;
-    public GameObject player6Prefab;
-    public GameObject player7Prefab;
-    public GameObject player8Prefab;
 
     void Start()
     {
@@ -43,6 +36,10 @@ public class DemoScript : MonoBehaviour
         players.Add("Nick");
         players.Add("Richard");
         InstantiatePlayerList(players);
+
+        foreach(GameObject player in playerPrefabs){
+            player.gameObject.SetActive(false);
+        }
     }
 
     public void SpawnGetCard()
@@ -87,45 +84,15 @@ public class DemoScript : MonoBehaviour
 
     public void InstantiatePlayerList(ArrayList players)
     {
-        if(players.Count > 0){
-            player1Prefab.GetComponent<UnityEngine.UI.Text>().text = (string)players[0];
-        } else {
-            player1Prefab.GetComponent<UnityEngine.UI.Text>().text = " ";
-        }
-        if(players.Count > 1){
-            player2Prefab.GetComponent<UnityEngine.UI.Text>().text = (string)players[1];
-        } else {
-            player2Prefab.GetComponent<UnityEngine.UI.Text>().text = " ";
-        }
-        if(players.Count > 2){
-            player3Prefab.GetComponent<UnityEngine.UI.Text>().text = (string)players[2];
-        } else {
-            player3Prefab.GetComponent<UnityEngine.UI.Text>().text = " ";
-        }
-        if(players.Count > 3){
-            player4Prefab.GetComponent<UnityEngine.UI.Text>().text = (string)players[3];
-        } else {
-            player4Prefab.GetComponent<UnityEngine.UI.Text>().text = " ";
-        }
-        if(players.Count > 4){
-            player5Prefab.GetComponent<UnityEngine.UI.Text>().text = (string)players[4];
-        } else {
-            player5Prefab.GetComponent<UnityEngine.UI.Text>().text = " ";
-        }
-        if(players.Count > 5){
-            player6Prefab.GetComponent<UnityEngine.UI.Text>().text = (string)players[5];
-        } else {
-            player6Prefab.GetComponent<UnityEngine.UI.Text>().text = " ";
-        }
-        if(players.Count > 6){
-            player7Prefab.GetComponent<UnityEngine.UI.Text>().text = (string)players[6];
-        } else {
-            player7Prefab.GetComponent<UnityEngine.UI.Text>().text = " ";
-        }
-        if(players.Count > 7){
-            player8Prefab.GetComponent<UnityEngine.UI.Text>().text = (string)players[7];
-        } else {
-            player8Prefab.GetComponent<UnityEngine.UI.Text>().text = " ";
+        int i = 0;
+        foreach(GameObject player in playerPrefabs){
+            if(players.Count > i){
+              player.GetComponentInChildren<Text>().text = (string)players[i];
+            }
+            else{
+              player.GetComponentInChildren<Text>().text = "";
+            }
+            i++;
         }
     }
 }
