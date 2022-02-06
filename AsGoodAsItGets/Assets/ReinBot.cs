@@ -125,7 +125,7 @@ public class ReinBot : MonoBehaviour
     public Card PickRandomGet()
     {
 		System.Random rnd = new System.Random();
-        int num = rnd.Next(4);
+        int num = rnd.Next(0,4);
 
         Card card = GetCards[num];
         GetCards.RemoveAt(num);
