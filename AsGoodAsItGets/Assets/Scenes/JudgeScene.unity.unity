@@ -709,6 +709,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6cd4f1d60e9c437c87286744447c495, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  butBackPrefab: {fileID: 8048590595736269903, guid: a5636cb4a3d2e0744837a763d0fbb736, type: 3}
+  getBackPrefab: {fileID: 8048590595736269903, guid: 495cd1b0de87b4441920716c0c9d13d1, type: 3}
   GetCardDeck: {fileID: 682462689}
   ButCardDeck: {fileID: 1937173423}
 --- !u!1 &1245591931
