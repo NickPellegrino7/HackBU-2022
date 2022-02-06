@@ -5,22 +5,22 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Hand&Deck/Scenes/Instructions.unity.unity
     guid: 3f31baa977fb94312beb5e596e545b20
-  - enabled: 0
+  - enabled: 1
     path: Assets/Hand&Deck/Scenes/Title Scene.unity.unity
     guid: 09cfcac9a725140db86f9a9c06031b2b
   - enabled: 1
     path: Assets/Scenes/Main.unity
     guid: ebbb174112334274b8b29c3e8e3f61be
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/SelectBots.unity.unity
     guid: 6bf2cff16c71d4559840c65b35c0c3b2
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/WinScreen.unity.unity
     guid: 7e9c4f20c5b3b489c8ffc457137e5635
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/RoundWinScreen.unity.unity
     guid: 07e55ec6d391a4c03aa771fb7cec3217
   m_configObjects: {}
