@@ -46,6 +46,6 @@ public class RoundWinnerScript : MonoBehaviour
 
     public void MoveToGameplay()
     {
-      SceneManager.LoadScene("Scenes/Demo");
+      SceneManager.LoadScene("Scenes/Main");
     }
 }

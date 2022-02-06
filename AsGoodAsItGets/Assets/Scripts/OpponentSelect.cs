@@ -32,6 +32,6 @@ public class OpponentSelect : MonoBehaviour
     public void SubmitOpponentNumber()
     {
 
-      SceneManager.LoadScene("Scenes/Demo");
+      SceneManager.LoadScene("Scenes/Main");
     }
 }
