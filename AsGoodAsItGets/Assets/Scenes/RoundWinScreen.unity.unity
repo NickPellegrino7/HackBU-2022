@@ -576,7 +576,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 154716392489267951, guid: 9d4e56682334b604cb7a721795e6c3f8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.11
+      value: -6.11
       objectReference: {fileID: 0}
     - target: {fileID: 154716392489267951, guid: 9d4e56682334b604cb7a721795e6c3f8, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1189,8 +1189,16 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 154716392489267951, guid: 9d4e56682334b604cb7a721795e6c3f8, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 154716392489267951, guid: 9d4e56682334b604cb7a721795e6c3f8, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 154716392489267951, guid: 9d4e56682334b604cb7a721795e6c3f8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.11
+      value: 6.11
       objectReference: {fileID: 0}
     - target: {fileID: 154716392489267951, guid: 9d4e56682334b604cb7a721795e6c3f8, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1391,5 +1399,7 @@ MonoBehaviour:
   WinnerText: {fileID: 1928670347}
   butBackPrefab: {fileID: 8048590595736269903, guid: a5636cb4a3d2e0744837a763d0fbb736, type: 3}
   getBackPrefab: {fileID: 8048590595736269903, guid: 495cd1b0de87b4441920716c0c9d13d1, type: 3}
+  nextRoundButton: {fileID: 0}
+  winGameButton: {fileID: 0}
   WinningGetCardDeck: {fileID: 569566574}
   WinningButCardDeck: {fileID: 1745578564}

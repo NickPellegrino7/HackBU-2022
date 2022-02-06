@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class JudgeScript : MonoBehaviour
@@ -33,12 +34,8 @@ public class JudgeScript : MonoBehaviour
       PlayerPrefs.SetInt("ToMainScene", 1);
       numSubmissions = 5; // for testing
       for(int i = 1; i < (numSubmissions+1); i ++){
-        //int getID = PlayerPrefs.GetInt("ChosenGet" + i.ToString(), -1);
-        //int butID = PlayerPrefs.GetInt("ChosenBut" + i.ToString(), -1);
-
-        // For Testing:
-        int getID = i;
-        int butID = i;
+        int getID = PlayerPrefs.GetInt("ChosenGet" + i.ToString(), i);
+        int butID = PlayerPrefs.GetInt("ChosenBut" + i.ToString(), i);
 
         Card butCard = Instantiate(butBackPrefab).GetComponent<Card>();
         butCard.Initialize(butID);
@@ -62,7 +59,9 @@ public class JudgeScript : MonoBehaviour
     }
 
     public void WinnerChosen() {
-        print("Winner is..." + currentSetIndex.ToString());
+        PlayerPrefs.SetInt("RoundGetWinner", currentGet.Id);
+        PlayerPrefs.SetInt("RoundButWinner", currentBut.Id);
+        SceneManager.LoadScene("Scenes/RoundWinScreen.unity");
     }
 
     private void CardSwitcheroo(){
