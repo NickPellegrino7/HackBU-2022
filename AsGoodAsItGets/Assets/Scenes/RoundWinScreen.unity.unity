@@ -1399,7 +1399,7 @@ MonoBehaviour:
   WinnerText: {fileID: 1928670347}
   butBackPrefab: {fileID: 8048590595736269903, guid: a5636cb4a3d2e0744837a763d0fbb736, type: 3}
   getBackPrefab: {fileID: 8048590595736269903, guid: 495cd1b0de87b4441920716c0c9d13d1, type: 3}
-  nextRoundButton: {fileID: 0}
-  winGameButton: {fileID: 0}
+  nextRoundButton: {fileID: 909802493}
+  winGameButton: {fileID: 1041874984}
   WinningGetCardDeck: {fileID: 569566574}
   WinningButCardDeck: {fileID: 1745578564}
