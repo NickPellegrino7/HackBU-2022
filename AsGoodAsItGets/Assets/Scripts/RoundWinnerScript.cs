@@ -41,7 +41,7 @@ public class RoundWinnerScript : MonoBehaviour
 
       if(winnerPoints == 4){
         nextRoundButton.SetActive(false);
-        winGameButton.SetActive(false);
+        winGameButton.SetActive(true);
       } else {
         PlayerPrefs.SetInt("Player" + winnerIndex.ToString() + "Points", winnerPoints + 1);
       }
