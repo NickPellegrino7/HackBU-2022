@@ -24,7 +24,7 @@ public class MainMenuScript : MonoBehaviour
 
     public void MoveToGameplay()
     {
-      SceneManager.LoadScene("Scenes/Demo");
+      SceneManager.LoadScene("Scenes/SelectBots.unity");
     }
 
     public void EndGame()

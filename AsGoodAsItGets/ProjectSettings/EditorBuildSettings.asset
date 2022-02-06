@@ -14,4 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Demo.unity
     guid: ebbb174112334274b8b29c3e8e3f61be
+  - enabled: 1
+    path: Assets/Scenes/SelectBots.unity.unity
+    guid: 6bf2cff16c71d4559840c65b35c0c3b2
+  - enabled: 1
+    path: Assets/Scenes/WinScreen.unity.unity
+    guid: 7e9c4f20c5b3b489c8ffc457137e5635
   m_configObjects: {}
