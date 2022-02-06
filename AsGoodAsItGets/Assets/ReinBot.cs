@@ -49,7 +49,7 @@ public class ReinBot : MonoBehaviour
         // Debug.Log(result);
     }
 
-    int chooseWinner(string[] getCards, string[] butCards) { // parameters should be parallel, and at least size 2, and some cards shouldn't be "" (empty)
+    public int chooseWinner(string[] getCards, string[] butCards) { // parameters should be parallel, and at least size 2, and some cards shouldn't be "" (empty)
 			// pick the shittiest combo because that means the but card wasn't very good
 			int mostShitIndex = 0;
       while (getCards[mostShitIndex] == "") {

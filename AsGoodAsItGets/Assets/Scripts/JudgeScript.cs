@@ -9,6 +9,9 @@ public class JudgeScript : MonoBehaviour
     public GameObject getBackPrefab;
     public GameObject butBackPrefab;
 
+    public GameObject backButton;
+    public GameObject forwardsButton;
+
     public CardsPile GetCardDeck;
     public CardsPile ButCardDeck;
 
@@ -17,11 +20,11 @@ public class JudgeScript : MonoBehaviour
 
     public GameObject ChooseWinner;
 
-    public int numSubmissions = 7;
+    int numSubmissions = 0;
 
-    private Card[] getCards = new Card[7];
-    private Card[] butCards = new Card[7];
-    private bool[] seenCombo = new bool[7];
+    private Card[] getCards = new Card[8];
+    private Card[] butCards = new Card[8];
+    private bool[] seenCombo = new bool[8];
 
     public Card currentGet;
     public Card currentBut;
@@ -33,12 +36,15 @@ public class JudgeScript : MonoBehaviour
     {
       PlayerPrefs.SetInt("ToMainScene", 1);
       for(int i = 1; i < 9; i ++){
-        int getID = PlayerPrefs.GetInt("ChosenGet" + i.ToString(), -1);
-        int butID = PlayerPrefs.GetInt("ChosenBut" + i.ToString(), -1);
+        int getID = PlayerPrefs.GetInt("ChosenGet" + i.ToString(), i);
+        int butID = PlayerPrefs.GetInt("ChosenBut" + i.ToString(), i);
 
         if(getID == -1 || butID == -1){
           continue;
         }
+
+        numSubmissions++;
+        Debug.Log(numSubmissions.ToString());
 
         Card butCard = Instantiate(butBackPrefab).GetComponent<Card>();
         butCard.Initialize(butID);
@@ -53,6 +59,54 @@ public class JudgeScript : MonoBehaviour
       }
       CardSwitcheroo();
 
+      int judgeIndex = PlayerPrefs.GetInt("JudgeIndex", -1);
+      judgeIndex = 1;
+
+      if(judgeIndex != 0){
+        StartCoroutine(botJudging(-1));
+        backButton.SetActive(false);
+        forwardsButton.SetActive(false);
+        ChooseWinner.SetActive(false);
+
+        string[] getStrings = new string[numSubmissions];
+        string[] butStrings = new string[numSubmissions];
+
+        int i = 0;
+        while(i < numSubmissions){
+          Card getCard = getCards[i];
+          Card butCard = butCards[i];
+
+          if (!getCard){
+            continue;
+          }
+
+          getStrings[i] = "G" + getCard.Id.ToString();
+          butStrings[i] = "B" + butCard.Id.ToString();
+
+          i++;
+        }
+
+        ReinBot bot = FindObjectOfType<ReinBot>();
+        int winner = bot.chooseWinner(getStrings, butStrings);
+
+        StartCoroutine(botJudging(winner));
+
+        WinnerChosen();
+
+      }
+    }
+
+    private IEnumerator botJudging(int idx){
+      do{
+        System.Random rnd = new System.Random();
+        int timeToWait = rnd.Next(2,6);
+
+        yield return new WaitForSeconds(2);
+        MoveCardsForward();
+        if (currentSetIndex == idx){
+          break;
+        }
+      } while(currentSetIndex != 0);
     }
 
     // Update is called once per frame
@@ -64,6 +118,10 @@ public class JudgeScript : MonoBehaviour
     public void WinnerChosen() {
         PlayerPrefs.SetInt("RoundGetWinner", currentGet.Id);
         PlayerPrefs.SetInt("RoundButWinner", currentBut.Id);
+        int judgeIndex = PlayerPrefs.GetInt("JudgeIndex", -1);
+        if(currentSetIndex >= judgeIndex){
+          currentSetIndex++;
+        }
         PlayerPrefs.SetString("RoundWinnerName", "Player " + (currentSetIndex + 1).ToString());
         SceneManager.LoadScene("Scenes/RoundWinScreen.unity");
     }
@@ -104,6 +162,9 @@ public class JudgeScript : MonoBehaviour
     public void MoveCardsForward()
     {
         currentSetIndex++;
+        if(currentSetIndex == PlayerPrefs.GetInt("JudgeIndex", -1)){
+          currentSetIndex++;
+        }
         if (currentSetIndex > (numSubmissions-1)) {
             currentSetIndex = 0;
         }
@@ -113,6 +174,9 @@ public class JudgeScript : MonoBehaviour
     public void MoveCardsBackward()
     {
         currentSetIndex--;
+        if(currentSetIndex == PlayerPrefs.GetInt("JudgeIndex", -1)){
+          currentSetIndex--;
+        }
         if (currentSetIndex < 0) {
             currentSetIndex = (numSubmissions-1);
         }

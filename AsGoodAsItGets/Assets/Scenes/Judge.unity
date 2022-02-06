@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 750549916}
-  m_IndirectSpecularColor: {r: 0.44300622, g: 0.49219513, b: 0.5719238, a: 1}
+  m_IndirectSpecularColor: {r: 0.44300655, g: 0.49219543, b: 0.57192427, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -469,7 +469,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &146230258
 RectTransform:
   m_ObjectHideFlags: 0
@@ -755,6 +755,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &471877533 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8595779372861997645, guid: e262859f841984035a834016a0b26041, type: 3}
+  m_PrefabInstance: {fileID: 1864101073}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &609099751
 GameObject:
   m_ObjectHideFlags: 0
@@ -919,6 +924,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9d4e56682334b604cb7a721795e6c3f8, type: 3}
+--- !u!1 &746119836 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5346810810460139317, guid: 2a18d7990baa144928c7efd89590e53c, type: 3}
+  m_PrefabInstance: {fileID: 1668744149}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &750549915
 GameObject:
   m_ObjectHideFlags: 0
@@ -1911,7 +1921,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5346810810460139319, guid: 2a18d7990baa144928c7efd89590e53c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: MoveCardsBackward
+      value: MoveCardsForward
       objectReference: {fileID: 0}
     - target: {fileID: 5346810810460139319, guid: 2a18d7990baa144928c7efd89590e53c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -2289,7 +2299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8595779372861997647, guid: e262859f841984035a834016a0b26041, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: MoveCardsForward
+      value: MoveCardsBackward
       objectReference: {fileID: 0}
     - target: {fileID: 8595779372861997647, guid: e262859f841984035a834016a0b26041, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -2332,12 +2342,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   getBackPrefab: {fileID: 8048590595736269903, guid: 495cd1b0de87b4441920716c0c9d13d1, type: 3}
   butBackPrefab: {fileID: 8048590595736269903, guid: a5636cb4a3d2e0744837a763d0fbb736, type: 3}
+  backButton: {fileID: 471877533}
+  forwardsButton: {fileID: 746119836}
   GetCardDeck: {fileID: 668916439}
   ButCardDeck: {fileID: 1022047657}
   GetDisplay: {fileID: 1919521300}
   ButDisplay: {fileID: 1960011928}
   ChooseWinner: {fileID: 1861315678}
-  numSubmissions: 7
   currentGet: {fileID: 0}
   currentBut: {fileID: 0}
 --- !u!4 &1905931506
