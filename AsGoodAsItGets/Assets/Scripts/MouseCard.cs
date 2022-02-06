@@ -26,16 +26,16 @@ public class MouseCard : MonoBehaviour
           ready = true;
         }
       }
-      Vector3 pos = image.GetComponent<Transform>().position;
-      for (float i = pos.z; i < GetComponent<Transform>().position.z+(state); i += 0.1f) {
-        pos = image.GetComponent<Transform>().position;
+      Vector3 pos = image.transform.position;
+      for (float i = pos.z; i < transform.position.z+(state); i += 0.1f) {
+        pos = image.transform.position;
         pos.z = i;
-        image.GetComponent<Transform>().position = pos;
+        image.transform.position = pos;
         await Task.Delay(TimeSpan.FromSeconds(waitTime));
       }
-      pos = GetComponent<Transform>().position;
-      pos.z = GetComponent<Transform>().position.z+state;
-      image.GetComponent<Transform>().position = pos;
+      pos = transform.position;
+      pos.z = transform.position.z+state;
+      image.transform.position = pos;
       localLock = false;
     }
 
@@ -49,14 +49,14 @@ public class MouseCard : MonoBehaviour
           ready = true;
         }
       }
-      Vector3 pos = image.GetComponent<Transform>().position;
-      for (float i = pos.z; i > GetComponent<Transform>().position.z; i -= 0.1f) {
-        pos = image.GetComponent<Transform>().position;
+      Vector3 pos = image.transform.position;
+      for (float i = pos.z; i > transform.position.z; i -= 0.1f) {
+        pos = image.transform.position;
         pos.z = i;
-        image.GetComponent<Transform>().position = pos;
+        image.transform.position = pos;
         await Task.Delay(TimeSpan.FromSeconds(waitTime));
       }
-      image.GetComponent<Transform>().position = GetComponent<Transform>().position;;
+      image.transform.position = transform.position;;
       localLock = false;
     }
 

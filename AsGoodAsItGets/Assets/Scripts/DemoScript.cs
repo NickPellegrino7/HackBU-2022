@@ -18,19 +18,29 @@ public class DemoScript : MonoBehaviour
 
     public TextMeshProUGUI JudgeName;
 
+    public CardsPile getCenter;
+    public CardsPile butCenter;
+
+    private bool _getSelected = false;
+    private bool _butSelected = false;
+
     void Start()
     {
-        for (int i = 0; i < handSize; i++)
-            getHand.Add(Instantiate(getBackPrefab), false);
+        for (int i = 1; i < deckSize + 1; i++)
+        {
+            Card card = Instantiate(getBackPrefab).GetComponent<Card>();
+            card.Initialize(i);
 
-        for (int i = 0; i < deckSize; i++)
-            getDeck.Add(Instantiate(getBackPrefab), false);
+            getDeck.Add(card, false);
+        }
 
-        for (int i = 0; i < handSize; i++)
-            butHand.Add(Instantiate(butBackPrefab), false);
+        for (int i = 1; i < deckSize + 1; i++)
+        {
+            Card card = Instantiate(butBackPrefab).GetComponent<Card>();
+            card.Initialize(i);
 
-        for (int i = 0; i < deckSize; i++)
-            butDeck.Add(Instantiate(butBackPrefab), false);
+            butDeck.Add(card, false);
+        }
 
         ArrayList players = new ArrayList();
         players.Add("Adiel");
@@ -42,6 +52,23 @@ public class DemoScript : MonoBehaviour
         foreach(GameObject player in playerPrefabs){
             player.gameObject.SetActive(false);
         }
+
+        StartCoroutine(DealCards());
+        
+    }
+
+    private IEnumerator DealCards()
+	{
+        for (int i = 0; i < 4; i++)
+        {
+            yield return new WaitForSeconds(.2f);
+            SpawnGetCard();
+        }
+        for (int i = 0; i < 4; i++)
+        {
+            yield return new WaitForSeconds(.2f);
+            SpawnButCard();
+        }
     }
 
     public void SpawnGetCard()
@@ -49,9 +76,10 @@ public class DemoScript : MonoBehaviour
         if (getDeck.Cards.Count == 0)
             return;
 
-        GameObject card = getDeck.Cards[getDeck.Cards.Count - 1];
+        Card card = getDeck.Cards[getDeck.Cards.Count - 1];
         getDeck.Remove(card);
         getHand.Add(card, 0);
+        card.Flip();
     }
 
     public void RemoveGetCard()
@@ -59,7 +87,7 @@ public class DemoScript : MonoBehaviour
         if (getHand.Cards.Count == 0)
             return;
 
-        GameObject card = getHand.Cards[getHand.Cards.Count - 1];
+        Card card = getHand.Cards[getHand.Cards.Count - 1];
         getHand.Remove(card);
         getDeck.Add(card);
     }
@@ -69,9 +97,10 @@ public class DemoScript : MonoBehaviour
         if (butDeck.Cards.Count == 0)
             return;
 
-        GameObject card = butDeck.Cards[butDeck.Cards.Count - 1];
+        Card card = butDeck.Cards[butDeck.Cards.Count - 1];
         butDeck.Remove(card);
         butHand.Add(card, 0);
+        card.Flip();
     }
 
     public void RemoveButCard()
@@ -79,7 +108,7 @@ public class DemoScript : MonoBehaviour
         if (butHand.Cards.Count == 0)
             return;
 
-        GameObject card = butHand.Cards[butHand.Cards.Count - 1];
+        Card card = butHand.Cards[butHand.Cards.Count - 1];
         butHand.Remove(card);
         butDeck.Add(card);
     }
@@ -99,4 +128,33 @@ public class DemoScript : MonoBehaviour
             i++;
         }
     }
+
+	private void Update()
+	{
+		if (Input.GetMouseButtonDown(0))
+		{
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if(Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, ~LayerMask.NameToLayer("Default"), QueryTriggerInteraction.Collide))
+			{
+                Card card = hit.collider.GetComponent<Card>();
+				if (card)
+				{
+                    if(card.Type == "Get")
+					{
+                        if (_getSelected) return;
+                        getCenter.Add(card);
+                        getHand.Remove(card);
+                        _getSelected = true;
+					}
+					else
+					{
+                        if (_butSelected) return;
+                        butCenter.Add(card);
+                        butHand.Remove(card);
+                        _butSelected = true;
+                    }
+				}
+			}            	    
+        }
+	}
 }

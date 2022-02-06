@@ -14,20 +14,20 @@ public class CardsPile : MonoBehaviour
 	public float moveDuration = 0.5f;
 	public Transform cardHolderPrefab;
 
-	readonly List<GameObject> cards = new List<GameObject>();
+	readonly List<Card> cards = new List<Card>();
 
-	public List<GameObject> Cards => new List<GameObject>(cards);
+	public List<Card> Cards => new List<Card>(cards);
 
 	public event Action<int> OnCountChanged;
 
 	readonly List<Transform> cardsHolders = new List<Transform>();
 
 	bool updatePositions;
-	readonly List<GameObject> forceSetPosition = new List<GameObject>();
+	readonly List<Card> forceSetPosition = new List<Card>();
 
-	public void Add(GameObject card, bool moveAnimation = true) => Add(card, -1, moveAnimation);
+	public void Add(Card card, bool moveAnimation = true) => Add(card, -1, moveAnimation);
 
-	public void Add(GameObject card, int index, bool moveAnimation = true)
+	public void Add(Card card, int index, bool moveAnimation = true)
 	{
 		Transform cardHolder = GetCardHolder();
 
@@ -50,7 +50,7 @@ public class CardsPile : MonoBehaviour
 		OnCountChanged?.Invoke(cards.Count);
 	}
 
-	public void Remove(GameObject card)
+	public void Remove(Card card)
 	{
 		if (!cards.Contains(card))
 			return;
