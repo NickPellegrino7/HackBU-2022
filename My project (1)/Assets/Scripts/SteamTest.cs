@@ -21,16 +21,24 @@ public class SteamTest : MonoBehaviour
       string name = SteamFriends.GetPersonaName();
       Debug.Log(name);
 
-      int friendCount = SteamFriends.GetFriendCount(EFriendFlags.k_EFriendFlagImmediate);
 
-			for (int i = 0; i < friendCount; ++i)
+	  int friendCount = SteamFriends.GetFriendCount(EFriendFlags.k_EFriendFlagImmediate);
+
+		for (int i = 0; i < friendCount; ++i)
+		{
+			CSteamID friendSteamId = SteamFriends.GetFriendByIndex(i, EFriendFlags.k_EFriendFlagImmediate);
+			string friendName = SteamFriends.GetFriendPersonaName(friendSteamId);
+			EPersonaState friendState = SteamFriends.GetFriendPersonaState(friendSteamId);
+			/*
+			if (friendName == "ultimatestarwarsgalaxy")
 			{
-				CSteamID friendSteamId = SteamFriends.GetFriendByIndex(i, EFriendFlags.k_EFriendFlagImmediate);
-				string friendName = SteamFriends.GetFriendPersonaName(friendSteamId);
-				EPersonaState friendState = SteamFriends.GetFriendPersonaState(friendSteamId);
-
-				Debug.Log( $"{friendName} is {friendState}");
+				SendString(friendSteamId, "hello world :D");
+				Debug.Log("MESSAGE SENT!");
 			}
+			*/
+
+			Debug.Log($"{friendName} is {friendState}");
+		}
 
 		/*
 
@@ -55,7 +63,7 @@ public class SteamTest : MonoBehaviour
 		SteamNetworking.SendP2PPacket(receiver, bytes, (uint) bytes.Length, EP2PSend.k_EP2PSendReliable);
 
 		*/
-    }
+	}
 
 		/// <summary>
         /// Send a message :D pog
