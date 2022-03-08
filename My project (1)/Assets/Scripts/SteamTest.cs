@@ -2,18 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Steamworks;
+using System;
 
 // DOCUMENTATION: https://wiki.facepunch.com/steamworks/SteamFriends
 
 public class SteamTest : MonoBehaviour
 {
 
-		/* private Callback<P2PSessionRequest_t> _p2PSessionRequestCallback; */
+	private Callback<P2PSessionRequest_t> _p2PSessionRequestCallback;
 
     // Start is called before the first frame update
     void Start()
     {
-			/* _p2PSessionRequestCallback = Callback<P2PSessionRequest_t>.Create(OnP2PSessionRequest); */
+	  _p2PSessionRequestCallback = Callback<P2PSessionRequest_t>.Create(OnP2PSessionRequest);
 
       if (!SteamManager.Initialized) { return; }
 
@@ -56,6 +57,11 @@ public class SteamTest : MonoBehaviour
 		*/
     }
 
+		/// <summary>
+        /// Send a message :D pog
+        /// </summary>
+        /// <param name="receiver"></param>
+        /// <param name="message"></param>
 		void SendString(CSteamID receiver, string message) {
 			// allocate new bytes array and copy string characters as bytes
 			byte[] bytes = new byte[message.Length * sizeof(char)];
@@ -71,7 +77,7 @@ public class SteamTest : MonoBehaviour
 			*/
 		}
 
-		/*
+		
 
 		void Update()
 		{
@@ -91,9 +97,10 @@ public class SteamTest : MonoBehaviour
 		        {
 		            // convert to string
 		            char[] chars = new char[bytesRead / sizeof(char)];
-		            Buffer.BlockCopy(buffer, 0, chars, 0, length);
+		            // Buffer.BlockCopy(buffer, 0, chars, 0, length);
+					Buffer.BlockCopy(buffer, 0, chars, 0, (int) bytesRead);
 
-		            string message = new string(chars, 0, chars.Length);
+				string message = new string(chars, 0, chars.Length);
 		            Debug.Log("Received a message: " + message);
 		        }
 		    }
@@ -102,14 +109,13 @@ public class SteamTest : MonoBehaviour
 		void OnP2PSessionRequest(P2PSessionRequest_t request)
 		{
 		    CSteamID clientId = request.m_steamIDRemote;
-		    if (ExpectingClient(clientId))
+
+			// if (ExpectingClient(clientId))
+			if (true)
 		    {
 		        SteamNetworking.AcceptP2PSessionWithUser(clientId);
-		    } else {
+		    }/* else {
 		        Debug.LogWarning("Unexpected session request from " + clientId);
-		    }
+		    }*/
 		}
-
-		*/
-
 }
