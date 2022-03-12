@@ -1,0 +1,5 @@
+This note is for anyone that may be unsure of what the license allows and requires from them in the event they are to resell content made with the help of it.
+
+What the LICENSE means is that all the content provided, once you have obtained it, is yours to: keep, modify, take parts from, sell games/software made with the content, though:
+
+You MUST provide a copy of the copyright notice and permission notice in all copies or portions of the Software that you share/sell/distribute.

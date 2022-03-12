@@ -1,0 +1,27 @@
+{
+	"appid": 480_REPLACE_THIS_WITH_YOUR_APPID,
+	"items": [
+	{
+		"itemdefid": 1,
+		"type": "item",
+		"name": "Hat 1",
+		"item_quality": 0,
+		"specialization": "Hat"
+	},
+	{
+		"itemdefid": 2,
+		"type": "item",
+		"name": "Hat 2",
+		"item_quality": 0,
+		"specialization": "Hat"
+	},
+	{
+		"itemdefid": 3,
+		"type": "item",
+		"name": "OtherItem 3",
+		"item_quality": 0,
+		"specialization": "Other"
+	}
+	]
+}
+
