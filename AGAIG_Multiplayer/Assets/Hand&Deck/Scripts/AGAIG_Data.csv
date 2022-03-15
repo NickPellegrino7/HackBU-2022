@@ -1,0 +1,201 @@
+Text,Card,Category,Severity
+You go a full week without anything annoying happening,G1,0,0
+You can read any book in seconds,G2,0,1
+Tomorrow will be a great day,G3,0,0
+Your phone’s battery lasts forever,G4,0,1
+You get the day off due to a snowstorm,G5,1,0
+You become a rock star,G6,2,2
+You pet someone else’s dog,G7,1,0
+You’re in a room with kittens for one hour,G8,1,1
+You can summon popcorn at will,G9,0,1
+You win a nobel prize,G10,3,2
+You reinvent the political system,G11,3,2
+You become your favorite fictional character,G12,1,2
+You become the CEO of a powerful company,G13,4,2
+You finally win a round of this game,G14,1,0
+You can make fantastic artwork easily and quickly,G15,0,2
+You eat a tasty sandwich,G16,1,0
+You go on a shopping spree,G17,1,0
+You become a master blacksmith,G18,0,1
+3 peace is achieved,G19,3,2
+You find $20 on the sidewalk,G20,4,0
+You become a certified pilot,G21,2,1
+You raise $1000000 for the charity of your choice,G22,3,2
+You have a key that can open any lock,G23,0,2
+You win four tickets to a show of your choice,G24,1,1
+You can speak any language,G25,0,1
+You win a cool fossil collection at an auction,G26,4,1
+You are no longer allergic to anything,G27,0,0
+You win the lottery,G28,4,2
+You achieve your dream job,G29,4,2
+You win a free T-shirt,G30,4,0
+You find $1 on the sidewalk,G31,4,0
+You can commit one crime without getting caught,G32,0,1
+You win a collection of rare and expensive comic books,G33,4,1
+You are cast in a big-budget movie,G34,1,2
+You will never get a headache ever again,G35,0,1
+You become a master at archery,G36,0,1
+You become a wizard,G37,0,2
+You can talk to animals and they understand you,G38,0,2
+You adopt a new pet kitten,G39,1,0
+You become the fastest runner alive,G40,0,2
+You no longer need to eat food to survive,G41,0,1
+Your teeth never need to be cleaned to stay healthy,G42,0,0
+Using the bathroom cures you from all diseases,G43,0,2
+You do not need to use the bathroom anymore,G44,0,1
+You discover a time capsule from 1000 years ago,G45,4,2
+You are immortal,G46,0,2
+Your body will no longer age 0ly,G47,0,2
+You make a scientific discovery,G48,3,2
+You are the first to discover alien life on another planet,G49,3,2
+You discover that you are a descendant of royalty,G50,2,0
+You watch a cool show in a planetarium,G51,1,0
+You write a book and it gets published,G52,4,1
+You eat a chocolate bar,G53,1,0
+You get a promotion,G54,4,1
+You buy a new pair of socks,G55,1,0
+Everyone you meet instantly likes you,G56,0,1
+You see a funny meme,G57,1,0
+You find a beautiful flower growing in your yard,G58,4,0
+You go fishing and catch a huge sea bass,G59,1,0
+You are featured on the cover of your favorite magazine,G60,1,2
+You make a meme and it goes viral,G61,1,1
+You make ten new friends this week,G62,1,1
+You find a very rare collectible card on the street,G63,4,1
+You set a 3 record,G64,1,2
+You earn a doctorate degree,G65,2,1
+You find a real genie’s lamp,G66,0,2
+You find true love,G67,1,2
+You have control of an army loyal only to you,G68,2,2
+You win a free toaster,G69,4,0
+You become rich and famous,G70,4,2
+You adopt a new pet puppy,G71,1,0
+You win ten free books,G72,4,0
+You win tickets to a popular improv show,G73,1,1
+You take the best photo that you’ve ever taken,G74,1,0
+You win a new phone,G75,4,1
+You ace a test that you were nervous about,G76,2,0
+You finally watch a movie that you’ve been wanting to see,G77,1,0
+You have been made the royal ruler of a small nation,G78,2,2
+You can perform any task well without even trying,G79,0,2
+You form a successful small business,G80,4,1
+Your stocks triple in value,G81,4,1
+You are invited to be a guest on your favorite talk show,G82,1,2
+You are always the funniest person in the room,G83,0,1
+You win a lifetime supply of toilet seats,G84,4,0
+You travel to space and orbit Earth,G85,1,2
+You invent a way for humans to time travel,G86,3,2
+You discover the cure for a disease,G87,3,2
+You develop a video game,G88,2,1
+You invent the best perfume smell ever created,G89,2,1
+You have a nice holiday dinner with your family,G90,1,0
+You go on a tour of Europe,G91,1,2
+You win tickets to a luxury cruise,G92,1,2
+You go to a fun party,G93,1,1
+You can travel to other dimensions,G94,0,2
+You can fly,G95,0,2
+You have super strength,G96,0,2
+You have laser vision,G97,0,2
+You can see one minute into the future,G98,0,1
+You go on an exciting safari,G99,1,1
+You can turn invisible at will,G100,0,2
+You drink an entire bottle of hand sanitizer,B1,0,1
+You turn into a pancake,B2,0,2
+You get a flat tire,B3,1,0
+You total your car,B4,1,2
+You must brush your teeth after every bite of food,B5,2,0
+Someone keys your car,B6,1,0
+Every day you get a bloody nose for no reason,B7,2,0
+You must beat your heart manually at all times,B8,2,2
+You're struck by lightning,B9,0,2
+Everything smells like garbage to you now,B10,2,1
+Your phone breaks,B11,1,1
+You eat a rotten egg,B12,0,0
+You get a bad case of lice,B13,0,1
+You must agree to do anything anyone asks of you,B14,2,2
+You can’t use the internet for two days,B15,2,0
+A song you hate gets stuck in your head for a full week,B16,3,0
+You can’t fall asleep for a full week,B17,2,1
+You rub jalapeño juice in your eyes,B18,0,0
+You can no longer eat your favorite food,B19,2,1
+Someone spoils the ending of a movie you were excited to see,B20,3,0
+Every night you have at least one terrifying nightmare,B21,3,1
+You no longer know how to swim,B22,2,0
+You are always late for every meeting,B23,4,0
+Your farts will always sound loud and rude,B24,4,0
+There’s a 100% chance of bad weather tomorrow,B25,2,0
+Your fingernail breaks,B26,0,0
+You develop a permanent case of toenail fungus,B27,0,1
+You must always wear wet socks,B28,2,1
+You have no feet,B29,2,2
+You lose your ability to express emotion,B30,4,2
+You get a bad tattoo,B31,4,1
+You constantly have a stuffy nose,B32,0,0
+Your true love secretly hates you,B33,4,1
+One of your fingers gets chopped off,B34,0,1
+A random person slams a pie into your face,B35,2,0
+Over the period of one year you slowly turn into a potato,B36,0,2
+Another ear grows on the back of your neck,B37,4,1
+Every month at some random time you will go blind for one hour,B38,2,1
+You constantly feel constipated,B39,0,1
+You spill lemon juice in your open wound,B40,0,0
+You have a piece of dental floss caught in your teeth forever,B41,3,1
+All of your friends secretly hate you,B42,4,2
+Robots take over the 3,B43,2,2
+You get a foot cramp,B44,0,0
+Your taxes are raised,B45,1,1
+You slam a door shut on your fingers,B46,0,0
+You give up on all of your hopes and dreams,B47,3,2
+You get a bad haircut,B48,4,0
+Your pet is feeling sick today,B49,2,0
+There’s an ant infestation in your bedroom,B50,2,1
+You require emergency surgery,B51,0,2
+You scrape your knee,B52,0,0
+You can no longer go outside,B53,2,2
+You will spend the final month of your life in prison,B54,2,1
+You don’t see your children for 20 years,B55,4,2
+You’re robbed,B56,1,1
+You have one month to live,B57,0,2
+The bank repossesses your house,B58,1,2
+You lose all of your hair,B59,4,1
+Every day a bug flies into your mouth,B60,2,1
+You can’t talk anymore,B61,2,2
+You have sore legs constantly for two years,B62,0,1
+You get a bad ear infection,B63,0,1
+You grow a tail,B64,4,2
+You always snore very loudly when you sleep,B65,2,0
+You break your nose,B66,0,1
+A movie you really wanted to see is cancelled,B67,3,0
+You’re fired from your job,B68,1,2
+You spill coffee on important documents at work,B69,2,1
+You develop an allergy to your favorite pet,B70,2,1
+You become allergic to butter and tomatoes,B71,2,0
+Your left shoe will always untie itself right after you tie it,B72,2,0
+You can no longer wear shoes,B73,2,1
+A dentist drills your teeth without using anesthesia,B74,0,1
+You chip a tooth and it cannot be fixed,B75,0,0
+As people get to know you they’ll start to hate you,B76,4,2
+You no longer know how to read,B77,2,2
+You lose your sense of touch,B78,0,1
+Someone hacks into your computer,B79,1,1
+You must always buy everything you see advertised,B80,3,1
+The stock market crashes,B81,1,2
+Your hands are always sticky,B82,2,0
+You doubt every decision you make,B83,3,2
+Society shuns you as a liar and a fraud,B84,4,2
+Winter lasts for the entire year,B85,2,2
+Any amount of sunlight will burn your skin,B86,0,2
+You get hit by a meteor,B87,0,2
+You can’t think before you speak,B88,3,2
+All food tastes bad to you now,B89,2,1
+You fall ill during a vacation,B90,0,0
+Someone steals your work and claims it as their own,B91,2,1
+For the next week you can’t make any decisions,B92,3,1
+Your social interactions are crippled by your low self-esteem,B93,4,1
+Your GPS will always direct you to the wrong place,B94,2,1
+You forget everything you’ve done for the last four months,B95,2,1
+You outlive your friends and family and die sad and lonely,B96,4,2
+You are no longer able to keep track of time,B97,2,2
+You must join a new religion,B98,2,2
+Nobody takes you seriously,B99,3,2
+Your skin is completely removed,B100,0,2

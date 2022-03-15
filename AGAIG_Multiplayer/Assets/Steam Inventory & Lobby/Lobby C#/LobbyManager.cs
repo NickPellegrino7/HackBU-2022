@@ -180,5 +180,9 @@ namespace BrettArnett
         {
             localGamePlayerScript.QuitLobby();
         }
+
+        public List<GamePlayer> GetPlayers() {
+            return Game.GamePlayers;
+        }
     }
 }
