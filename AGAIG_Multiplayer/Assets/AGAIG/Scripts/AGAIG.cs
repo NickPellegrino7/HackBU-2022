@@ -20,13 +20,13 @@ public class AGAIG : MonoBehaviour
     public CardsPile getDeck;
     public GameObject getCardPrefab;
 
-    // Start is called before the first frame update
+    // Start is called before the first frame update (host hasn't been found yet when this is called)
     void Start()
     {
         _hostFound = false;
     }
 
-    // Just like Start(), but doesn't happen until the host is found and multiplayer is happy
+    // Just like Start(), but delayed to the first frame (host is found right before this is called)
     void FirstFrame()
     {
         Debug.Log("~~~~~~~~~~~~ CONNECTED ~~~~~~~~~~~~");

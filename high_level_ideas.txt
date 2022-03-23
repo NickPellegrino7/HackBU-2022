@@ -1,0 +1,55 @@
+HOST
+PLAYER
+...
+PLAYER
+BOT
+...
+BOT
+
+Possible Bots:
+[BOT] Virmir the Ranger
+[BOT] Elwin the Warlock
+[BOT] Julia the Rogue
+[BOT] Harley the Wizard
+[BOT] Isabella the Monk
+[BOT] Rachel the Artificer
+[BOT] Cosmo the Chameleon
+[BOT] Alton the Sorcerer
+[BOT] Mishu the Druid
+[BOT] Ludwig the Bard
+[BOT] Selenzia the Paladin
+[BOT] Borgash the Barbarian
+[BOT] Freda the Cleric
+[BOT] Phoenix the Fighter
+
+HOST KEEPS TRACK OF: 
+- Undrawn Pile
+- Discard Pile
+- All Player Hands
+- All Bot Hands
+- Judge Pointer
+
+If a player disconnects, they become [DIS] PlayerName, and are played by a bot.
+
+~~~~~~s
+SCENES
+~~~~~~
+
+(1) Hand State
+- List of players, bots, and judge are listed on the left.
+- Cards in your hand are visible before you.
+- Tutorial on the top-right.
+- Play a card, and it flies off the screen.
+- "SABOTAGE" also happens on this screen. The host takes care of all the data.
+- You play a card, and it flies off the screen.
+
+(2) Judge State
+- You see all the cards at once, and they have buttons under them iff you are the judge.
+- Judge picks their favorite card combo.
+- Rules explained at the top.
+- Winner of the round (or the entire game) is shown. HOST must click "Next Round".
+
+Maybe make it possible for players to join and spectate, and then they only get to play once someone disconnects or a bot is removed?
+
+Or just automatically kill any bots that are in the way when a new player joins and wants the slot.
+
