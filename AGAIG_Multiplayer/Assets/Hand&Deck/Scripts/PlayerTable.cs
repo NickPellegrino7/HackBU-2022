@@ -11,6 +11,8 @@ public class PlayerTable : MonoBehaviour
 {
   public static MultiplayerAGAIG MultiplayerManager;
 
+  public GameObject playerView;
+
   public CardsPile getDeck;
   public CardsPile butDeck;
 
@@ -50,7 +52,7 @@ public class PlayerTable : MonoBehaviour
     // Other updates, given that multiplayer has connected
     else {
       // Make sure none of the player tables overlap by moving them 30 * connection_id on the x-axis
-      this.transform.position = new Vector3((MultiplayerManager._myPlayer.ConnectionId * 30), 0, 0);
+      playerView.transform.position = new Vector3((MultiplayerManager._myPlayer.ConnectionId * 30), 0, 0);
     }
   }
 
