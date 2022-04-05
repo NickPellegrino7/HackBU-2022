@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 4819430016010306273}
   - component: {fileID: 5648259255559072574}
   m_Layer: 0
-  m_Name: GetCard
+  m_Name: ButCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -244,7 +244,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 309ff6b7ac0046848ac366b22a1cf5ad, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 010d99044c7184f3891222c6be73a0d3, type: 2}
+      objectReference: {fileID: 2100000, guid: 7cc71def3538e44ce93c4628b8b94497, type: 2}
     - target: {fileID: 919132149155446097, guid: 309ff6b7ac0046848ac366b22a1cf5ad, type: 3}
       propertyPath: m_Name
       value: Back

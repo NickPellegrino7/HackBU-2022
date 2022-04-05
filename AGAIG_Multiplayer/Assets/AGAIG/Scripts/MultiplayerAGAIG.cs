@@ -5,20 +5,15 @@ using Steamworks;
 using System;
 using BrettArnett;
 
-public class AGAIG : MonoBehaviour
+public class MultiplayerAGAIG : MonoBehaviour
 {
     public LobbyManager lobby;
-    private ReinBot bot;
 
-    private int deckSize = 100;
-
-    private CSteamID _myID;
-    private bool _isHost;
-    private CSteamID _hostID;
-    private bool _hostFound;
-
-    public CardsPile getDeck;
-    public GameObject getCardPrefab;
+    public CSteamID _myID;
+    public bool _isHost;
+    public CSteamID _hostID;
+    public bool _hostFound;
+    public GamePlayer _myPlayer;
 
     // Start is called before the first frame update (host hasn't been found yet when this is called)
     void Start()
@@ -30,18 +25,8 @@ public class AGAIG : MonoBehaviour
     void FirstFrame()
     {
         Debug.Log("~~~~~~~~~~~~ CONNECTED ~~~~~~~~~~~~");
-        PrintPlayerData();
-        SendMessageOut("Hello World!");
-
-        // Creating a deck of GET cards
-        for (int i = 1; i < deckSize + 1; i++)
-        {
-            Card card = Instantiate(getCardPrefab).GetComponent<Card>();
-            card.gameObject.name = card.gameObject.name + i.ToString();
-            card.Initialize(i);
-            getDeck.Add(card, true);
-            Debug.Log(i);
-        }
+        // PrintPlayerData();
+        // SendMessageOut("Hello World!");
     }
 
     void Update()
@@ -57,7 +42,9 @@ public class AGAIG : MonoBehaviour
                     _hostID = (CSteamID)player.playerSteamId;
                     _isHost = (_myID == _hostID);
                     FirstFrame();
-                    break;
+                }
+                if (_myID == (CSteamID)player.playerSteamId) {
+                    _myPlayer = player;
                 }
             }
         }
@@ -92,7 +79,7 @@ public class AGAIG : MonoBehaviour
     }
 
     // Debugging Function to see who is in the lobby
-    void PrintPlayerData()
+    public void PrintPlayerData()
     {
         foreach (GamePlayer player in lobby.GetPlayers()) {
             Debug.Log(player.playerName);
@@ -103,7 +90,7 @@ public class AGAIG : MonoBehaviour
 
     // IF YOU ARE HOST: This function sends a "HOST_" message to all players, including yourself
     // IF YOU ARE NOT HOST: This function sends a message to the host
-    void SendMessageOut(string message) {
+    public void SendMessageOut(string message) {
         if (_isHost) {
             message = "HOST_" + message;
             foreach (GamePlayer player in lobby.GetPlayers()) {
@@ -118,7 +105,7 @@ public class AGAIG : MonoBehaviour
     // Send a message to a specific SteamID
     // This should only be called by the host, when telling a specific player what they drew
     // Non-hosts should exclusively use SendMessageOut() to talk to the Host
-    void SendString(CSteamID receiver, string message) {
+    public void SendString(CSteamID receiver, string message) {
         // allocate new bytes array and copy string characters as bytes
         byte[] bytes = new byte[message.Length * sizeof(char)];
         System.Buffer.BlockCopy(message.ToCharArray(), 0, bytes, 0, bytes.Length);
@@ -134,7 +121,7 @@ public class AGAIG : MonoBehaviour
     }
 
     // Helper function, do not use or modify this please!
-    void OnP2PSessionRequest(P2PSessionRequest_t request)
+    public void OnP2PSessionRequest(P2PSessionRequest_t request)
     {
         CSteamID clientId = request.m_steamIDRemote;
 
