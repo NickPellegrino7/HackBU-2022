@@ -52,7 +52,8 @@ public class PlayerTable : MonoBehaviour
     // Other updates, given that multiplayer has connected
     else {
       // Make sure none of the player tables overlap by moving them 30 * connection_id on the x-axis
-      playerView.transform.position = new Vector3((MultiplayerManager._myPlayer.ConnectionId * 30), 0, 0);
+      playerView.transform.position = new Vector3(((MultiplayerManager._myPlayer.ConnectionId + 1) * 30), 0, 0);
+      Debug.Log((MultiplayerManager._myPlayer.ConnectionId + 1) * 30);
     }
   }
 
