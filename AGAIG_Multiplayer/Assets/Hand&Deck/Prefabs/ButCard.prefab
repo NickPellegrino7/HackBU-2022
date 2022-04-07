@@ -160,6 +160,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Id: 0
+  image: {fileID: 2089557845317014579}
   _type: G
 --- !u!65 &5648259255559072574
 BoxCollider:

@@ -19,22 +19,25 @@ public class PlayerTable : MonoBehaviour
   public GameObject getBackPrefab;
   public GameObject butBackPrefab;
 
+  private Ray _ray;
+  private RaycastHit _hit;
+
   private bool _multiplayerFound;
 
-  private int deckSize = 30;
+  private int _deckSize = 30;
 
   void Start() {
     // Find Multiplayer Manager
     MultiplayerManager = GameObject.FindObjectOfType<MultiplayerAGAIG>();
 
     // Set Up Card Decks
-    for (int i = 1; i < deckSize + 1; i++) {
+    for (int i = 1; i < _deckSize + 1; i++) {
         Card card = Instantiate(getBackPrefab).GetComponent<Card>();
         // card.gameObject.name = card.gameObject.name + i.ToString();
         // card.Initialize(i);
         getDeck.Add(card, false);
     }
-    for (int i = 1; i < deckSize + 1; i++) {
+    for (int i = 1; i < _deckSize + 1; i++) {
         Card card = Instantiate(butBackPrefab).GetComponent<Card>();
         // card.gameObject.name = card.gameObject.name + i.ToString();
         // card.Initialize(i);
@@ -49,13 +52,14 @@ public class PlayerTable : MonoBehaviour
       _multiplayerFound = true;
       MultiplayerManager.SendMessageOut("Hello World!");
     }
-    // Other updates, given that multiplayer has connected
-    /*
-    else {
-      // Getting player info: MultiplayerManager._myPlayer.{ConnectionId / playerName / playerSteamId}
 
+    _ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    if(Physics.Raycast(_ray, out _hit)) {
+        if (_hit.collider.GetComponent<Card>() != null) {
+          _hit.collider.GetComponent<Card>().HoverOver();
+        }
     }
-    */
+
   }
 
 }
