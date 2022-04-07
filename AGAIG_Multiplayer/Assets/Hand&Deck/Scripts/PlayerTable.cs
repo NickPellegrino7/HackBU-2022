@@ -11,8 +11,6 @@ public class PlayerTable : MonoBehaviour
 {
   public static MultiplayerAGAIG MultiplayerManager;
 
-  public GameObject playerView;
-
   public CardsPile getDeck;
   public CardsPile butDeck;
 

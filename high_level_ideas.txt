@@ -31,7 +31,7 @@ HOST KEEPS TRACK OF:
 
 If a player disconnects, they become [DIS] PlayerName, and are played by a bot.
 
-~~~~~~s
+~~~~~~
 SCENES
 ~~~~~~
 
