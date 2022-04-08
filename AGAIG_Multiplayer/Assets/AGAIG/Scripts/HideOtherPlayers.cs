@@ -15,7 +15,7 @@ public class HideOtherPlayers : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        playerClone = GameObject.Find("Player (Clone)");
+        playerClone = GameObject.Find("Player(Clone)");
         if (playerClone) { playerClone.SetActive(false); }
     }
 }

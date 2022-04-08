@@ -2888,11 +2888,11 @@ MonoBehaviour:
   disconnectInactiveConnections: 1
   disconnectInactiveTimeout: 10
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 481188560602928037, guid: 56970705a8cb04f0d921691af427d27b, type: 3}
+  playerPrefab: {fileID: 481188560602928037, guid: 3d8924b4022144c2c9578d57724be97f, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs: []
-  gamePlayerPrefab: {fileID: 481188560602928038, guid: 56970705a8cb04f0d921691af427d27b, type: 3}
+  gamePlayerPrefab: {fileID: 481188560602928038, guid: 3d8924b4022144c2c9578d57724be97f, type: 3}
   minPlayers: 1
 --- !u!114 &805860450
 MonoBehaviour:
