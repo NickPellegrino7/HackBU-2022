@@ -33,6 +33,7 @@ public class Card : MonoBehaviour
         _meshRenderer = GetComponentInChildren<MeshRenderer>();
         string test = $"{_type}/{_type[0]}{Id}";
         Sprite sprite = Resources.Load<Sprite>($"{_type}/{_type[0]}{Id}");
+        print($"{_type}/{_type[0]}{Id}");
 
         _spriteRenderer.sprite = sprite;
         _spriteRenderer.enabled = false;

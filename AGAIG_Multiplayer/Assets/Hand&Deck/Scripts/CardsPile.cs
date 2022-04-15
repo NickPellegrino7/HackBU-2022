@@ -85,6 +85,15 @@ public class CardsPile : MonoBehaviour
 			Remove(cards[0]);
 	}
 
+	public void DestroyAll()
+	{
+		while (cards.Count > 0) {
+			Card card = cards[0];
+			Remove(card);
+			Destroy(card.gameObject);
+		}
+	}
+
 	Transform GetCardHolder()
 	{
 		Transform cardHolder = Instantiate(cardHolderPrefab, transform, false);
@@ -152,6 +161,11 @@ public class CardsPile : MonoBehaviour
 		return cards.Count;
 	}
 
+	public Card getCard(int cardNumber)
+	{
+		return cards[cardNumber];
+	}
+
 	public void DestroyAllCards()
 	{
 		while(cards.Count > 0) {
@@ -159,5 +173,14 @@ public class CardsPile : MonoBehaviour
 			Remove(myCard);
 			Destroy(myCard);
 		}
+	}
+
+	public bool InHand(int cardNumber) {
+		for (int i = 0; i < cards.Count; i++) {
+			if (cards[i].Id == cardNumber) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -15,10 +15,16 @@ public class MultiplayerAGAIG : MonoBehaviour
     public bool _hostFound;
     public GamePlayer _myPlayer;
 
+    public int[] _localGetCards = new int[4];
+    public int[] _localButCards = new int[4];
+
+    public bool drawReady = false;
+
     // Start is called before the first frame update (host hasn't been found yet when this is called)
     void Start()
     {
         _hostFound = false;
+        UpdateHand("HOST_HG2G100G5G13B25B45B67B2");
     }
 
     // Just like Start(), but delayed to the first frame (host is found right before this is called)
@@ -74,8 +80,36 @@ public class MultiplayerAGAIG : MonoBehaviour
 
             string message = new string(chars, 0, chars.Length);
                 Debug.Log("Received a message: " + message);
+                if (message.Substring(0, 6).Equals("HOST_H")) { // Update Hand
+                    // Example: "HOST_HG2G100G5G13B25B45B67B2"
+                    UpdateHand(message);
+                }
             }
         }
+    }
+
+    private void UpdateHand(string message) {
+        int index;
+        for (int i = 0; i < 3; i++) {
+            index = message.IndexOf('G');
+            message = message.Substring(index+1);
+            index = message.IndexOf('G');
+            _localGetCards[i] = int.Parse(message.Substring(0, index));
+        }
+        index = message.IndexOf('G');
+        message = message.Substring(index+1);
+        index = message.IndexOf('B');
+        _localGetCards[3] = int.Parse(message.Substring(0, index));
+        for (int i = 4; i < 7; i++) {
+            index = message.IndexOf('B');
+            message = message.Substring(index+1);
+            index = message.IndexOf('B');
+            _localButCards[i-4] = int.Parse(message.Substring(0, index));
+        }
+        index = message.IndexOf('B');
+        message = message.Substring(index+1);
+        _localButCards[3] = int.Parse(message);
+        drawReady = true;
     }
 
     // Debugging Function to see who is in the lobby

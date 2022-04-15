@@ -58,7 +58,7 @@ Transform:
   m_GameObject: {fileID: 2468952278670165336}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.12, y: 0.12, z: 0.12}
+  m_LocalScale: {x: 0.254, y: 0.254, z: 0.254}
   m_Children: []
   m_Father: {fileID: 8968017555175218947}
   m_RootOrder: 0
@@ -161,7 +161,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 0
   image: {fileID: 2089557845317014579}
-  _type: G
+  _type: GET
 --- !u!65 &5648259255559072574
 BoxCollider:
   m_ObjectHideFlags: 0
