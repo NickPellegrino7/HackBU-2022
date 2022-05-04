@@ -64,7 +64,7 @@ public class CardsPile : MonoBehaviour
 
 		Transform cardHolder = cardsHolders[cards.IndexOf(card)];
 		cardsHolders.Remove(cardHolder);
-		Destroy(cardHolder.gameObject);
+		// Destroy(cardHolder.gameObject);
 
 		cards.Remove(card);
 		card.transform.DOKill();

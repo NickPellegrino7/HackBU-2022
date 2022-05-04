@@ -100,11 +100,14 @@ public class PlayerTable : MonoBehaviour
       if (!getDeck.InHand(cardNumber)) {
         Card card = Instantiate(getBackPrefab).GetComponent<Card>();
         card.Initialize(cardNumber);
+        Card getDummy = getDeck.getCard(0);
+        getDeck.RemoveAt(0);
         getDeck.Add(card, false);
         yield return new WaitForSeconds(.2f);
-        card.Flip();
         getDeck.Remove(card);
+        card.Flip();
         getHand.Add(card); // Animation from getDeck --> getHand
+        getDeck.Add(getDummy, getDeck.getCount()-1, false);
         yield return new WaitForSeconds(.2f);
       }
     }
@@ -113,11 +116,14 @@ public class PlayerTable : MonoBehaviour
       if (!butDeck.InHand(cardNumber)) {
         Card card = Instantiate(butBackPrefab).GetComponent<Card>();
         card.Initialize(cardNumber);
+        Card butDummy = butDeck.getCard(0);
+        butDeck.RemoveAt(0);
         butDeck.Add(card, false);
         yield return new WaitForSeconds(.2f);
-        card.Flip();
         butDeck.Remove(card);
+        card.Flip();
         butHand.Add(card); // Animation from butDeck --> butHand
+        butDeck.Add(butDummy, butDeck.getCount()-1, false);
         yield return new WaitForSeconds(.2f);
       }
     }
