@@ -73,24 +73,6 @@ public class PlayerTable : MonoBehaviour
     }
   }
 
-  private void DrawGetCard(int cardNumber) {
-    Card card = Instantiate(getBackPrefab).GetComponent<Card>();
-    card.Initialize(cardNumber);
-    getDeck.Add(card, false);
-    card.Flip();
-    getDeck.Remove(card);
-    getHand.Add(card); // Animation from getDeck --> getHand
-  }
-
-  private void DrawButCard(int cardNumber) {
-    Card card = Instantiate(butBackPrefab).GetComponent<Card>();
-    card.Initialize(cardNumber);
-    butDeck.Add(card, false);
-    butDeck.Remove(card);
-    butHand.Add(card); // Animation from butDeck --> butHand
-    card.Flip();
-  }
-
   public void CleanHand() {
     for (int i = 0; i < getHand.getCount(); i++) {
       Card card = getHand.getCard(i);
@@ -116,17 +98,27 @@ public class PlayerTable : MonoBehaviour
     for (int i = 0; i < 4; i++) {
       cardNumber = MultiplayerManager._localGetCards[i];
       if (!getDeck.InHand(cardNumber)) {
-        print(cardNumber);
+        Card card = Instantiate(getBackPrefab).GetComponent<Card>();
+        card.Initialize(cardNumber);
+        getDeck.Add(card, false);
         yield return new WaitForSeconds(.2f);
-        DrawGetCard(cardNumber);
+        card.Flip();
+        getDeck.Remove(card);
+        getHand.Add(card); // Animation from getDeck --> getHand
+        yield return new WaitForSeconds(.2f);
       }
     }
     for (int i = 0; i < 4; i++) {
       cardNumber = MultiplayerManager._localButCards[i];
       if (!butDeck.InHand(cardNumber)) {
-        print(cardNumber);
+        Card card = Instantiate(butBackPrefab).GetComponent<Card>();
+        card.Initialize(cardNumber);
+        butDeck.Add(card, false);
         yield return new WaitForSeconds(.2f);
-        DrawButCard(cardNumber);
+        card.Flip();
+        butDeck.Remove(card);
+        butHand.Add(card); // Animation from butDeck --> butHand
+        yield return new WaitForSeconds(.2f);
       }
     }
   }

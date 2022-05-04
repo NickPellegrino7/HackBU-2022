@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-    public int Id;
+    public int Id = -1;
     public GameObject image;
 
     // Values for up/down movement animation
@@ -41,12 +41,14 @@ public class Card : MonoBehaviour
 
     public void Flip()
     {
-        if (_spriteRenderer.enabled) {
-            _spriteRenderer.enabled = false;
-            _meshRenderer.enabled = true;
-        } else {
-            _spriteRenderer.enabled = true;
-            _meshRenderer.enabled = false;
+        if (Id != -1) {
+            if (_spriteRenderer.enabled) {
+                _spriteRenderer.enabled = false;
+                _meshRenderer.enabled = true;
+            } else {
+                _spriteRenderer.enabled = true;
+                _meshRenderer.enabled = false;
+            }
         }
     }
 
